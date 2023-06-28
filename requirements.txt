@@ -1,0 +1,4 @@
+pandas
+mygene
+functools
+openpyxl
