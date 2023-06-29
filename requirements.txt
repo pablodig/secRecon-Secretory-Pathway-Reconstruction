@@ -1,4 +1,7 @@
 pandas
 mygene
-functools
 openpyxl
+networkx
+matplotlib
+itertools
+scipy
