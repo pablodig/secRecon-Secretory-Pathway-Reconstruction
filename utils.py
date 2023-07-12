@@ -24,7 +24,7 @@ def get_gene_color(gene, gene_dict, process_dict, category_colors):
     for category, processes in process_dict.items():
         # Check if any process is in the gene's processes
         for process in flatten_processes(category, processes):
-            if process in gene_dict.get(gene, []):
+            if process in gene_dict.get(gene, [])['processes']:
                 # If process is found, increment the count for the category
                 category_counts[category] = category_counts.get(category, 0) + 1
 
