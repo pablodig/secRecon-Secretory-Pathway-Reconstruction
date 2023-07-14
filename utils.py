@@ -1,3 +1,5 @@
+import matplotlib.colors as mcolors
+
 def get_gene_color(gene, gene_dict, process_dict, category_colors):
 
     """
@@ -53,3 +55,10 @@ def flatten_processes(category, process_list):
     flat_list = list(set(flat_list))
     
     return flat_list
+
+def adjust_color_alpha(hex_color, alpha):
+    # Convert the hex color to RGB
+    rgb_color = mcolors.hex2color(hex_color)
+    # Add the alpha component
+    rgba_color = (*rgb_color, alpha)
+    return rgba_color
