@@ -9,3 +9,4 @@ scanpy
 hvplot
 bbknn==1.5
 anndata
+leidenalg
