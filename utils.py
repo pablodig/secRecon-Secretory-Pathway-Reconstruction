@@ -1,4 +1,5 @@
 import matplotlib.colors as mcolors
+import numpy as np
 
 def get_gene_color(gene, gene_dict, process_dict, category_colors):
 
@@ -74,6 +75,10 @@ def categorize_location(text):
     Returns:
         list: A list of unique categories representing the cellular locations.
     """
+
+    # Check for missing values
+    if text is None or (isinstance(text, float) and np.isnan(text)):
+        return []
     
     categories = []  # List to store the categories of cellular locations
     text = text.lower()  # Convert the text to lowercase for uniformity
