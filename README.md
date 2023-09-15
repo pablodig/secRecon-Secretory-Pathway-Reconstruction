@@ -1,51 +1,91 @@
-# 01 Preprocessed Data - README
+# Single-cell RNA Sequencing (scRNA-seq) and Antibody-derived Tags (ADTs) Data Analysis Pipeline
 
-This notebook is primarily concerned with the **preprocessing** of single-cell RNA sequencing (scRNA-seq) and antibody-derived tags (ADTs) datasets from three different experiments (**exp100**, **exp105**, and **exp106**). The preprocessing includes **Quality Control (QC)**, **filtering**, and **exploratory data analysis**.
+This repository contains two Jupyter Notebooks that detail the workflow for analyzing scRNA-seq and ADTs datasets. The data originates from three separate experiments: **exp100**, **exp105**, and **exp106**.
 
-## Dependencies
+## Common Dependencies
 
-- **Scanpy**
-- **Matplotlib**
-- **NumPy**
+- **Scanpy**: For data manipulation and analysis
+- **Matplotlib**: For data visualization
+- **NumPy**: For numerical operations
+- **Seaborn**: For advanced data visualization
 
-## Summary of Steps
+---
 
-### Data Loading
+## 01 Preprocessed Data
 
-Datasets from three experiments are loaded into Scanpy's AnnData objects for further analysis.
+The primary aim of this notebook is to preprocess the scRNA-seq and ADTs datasets. The steps are designed to ensure that the data is clean and of high quality, ready for downstream analyses.
 
-### Quality Control and Filtering
+### Summary of Steps
 
-1. **Filter cells based on gene count**: Cells that have less than a certain number of genes are filtered out to remove low-quality cells.
+#### Data Loading
+
+- Datasets from **exp100**, **exp105**, and **exp106** are loaded into Scanpy's AnnData objects for efficient manipulation and visualization.
+
+#### Quality Control and Filtering
+
+1. **Filter cells based on gene count**: To eliminate low-quality cells, a gene count threshold is applied to each dataset.
     - **exp100**: Minimum 700 genes
     - **exp105**: Minimum 500 genes
     - **exp106**: Minimum 1000 genes
-2. **Annotate mitochondrial genes**: Mitochondrial genes are annotated as 'mt'.
-3. **Calculate QC metrics**: Additional quality control metrics such as `total_counts` and `pct_counts_mt` (percent of counts in mitochondrial genes) are calculated for each dataset.
+2. **Annotate mitochondrial genes**: These are marked as 'mt' for easy identification and further analyses.
+3. **Calculate QC metrics**: Metrics like `total_counts` and `pct_counts_mt` are calculated. These are crucial for ensuring the quality of the cells in the dataset.
+4. **Further filtering**: Cells exceeding certain QC metric thresholds are filtered out. For instance, in **exp100**, cells with more than 50,000 total counts or with 10% mitochondrial counts are removed.
 
-### Data Visualization
+#### Data Visualization
 
-- **Violin Plots**: Plots are generated to visualize the distribution of QC metrics such as the number of genes, total counts, and percentage of mitochondrial genes.
-- **Scatter Plots**: Scatter plots are used to explore relationships between various metrics, including `total_counts` and `pct_counts_mt`.
+- **Violin Plots**: These help in understanding the distribution of QC metrics like gene counts, total counts, and mitochondrial percentage.
+- **Scatter Plots**: Used to explore relationships between various QC metrics, enabling more informed filtering decisions.
 
-### Further Filtering Based on QC Metrics
+#### Additional Steps
 
-Cells are further filtered based on QC metrics. For example, cells with more than 50,000 total counts or 10% counts in mitochondrial genes are removed in **exp100**.
+- **Copying raw counts**: The original count data is saved in a new layer named "counts" for backtracking or additional analyses.
+- **Manual doublet cleanup**: Doublets or cell multiplets are identified and removed based on the mutually exclusive expression of heavy chain isotypes.
+- **Saving processed data**: The final AnnData object is saved as `exp106.h5` for future use.
+- **Pearson Correlations**: Correlations between different metrics like **IGHG1 vs IgG_ADT** and **IGHM vs IgG_ADT** are calculated for exploratory analysis.
 
-### Copying Raw Counts
+---
 
-Original count data is copied to a new layer named "counts" for future reference.
+## 02 Immunoglobulin Annotation and Visualization
 
-### Cleaning Up Doublets
+The focus of this notebook is to annotate and visualize immunoglobulin (Ig) genes and classes in the datasets.
 
-Manual doublet cleanup is performed based on mutual exclusivity of heavy chain isotypes. Thresholds are set for different immunoglobulin genes, and cells violating these thresholds are removed.
+### Summary of Steps
 
-### Saving Processed Data
+#### Preparing Data for Annotation
 
-Finally, the cleaned-up dataset is saved to disk as `exp106.h5`.
+1. **Load preprocessed dataset**: The cleaned dataset from the previous notebook is imported.
+2. **Logarithmic scaling of data**: Data is log-scaled to make it more conducive for machine learning algorithms.
 
-### Pearson Correlations
+#### Immunoglobulin (Ig) Annotation
 
-Pearson correlation is calculated between different metrics such as **IGHG1 vs IgG_ADT** and **IGHM vs IgG_ADT** for exploratory analysis.
+1. **Heavy Chain Annotation**: The dataset is annotated for the presence of different heavy chains like IgG, IgA, etc.
+2. **Light Chain Annotation**: Similar to heavy chains, light chains are also annotated.
+
+#### Labeling
+
+- **Assigning Ig labels**: Cells are labeled based on the presence of specific Ig classes and light and heavy chains.
+
+#### Visualization
+
+1. **UMAP Plotting**: UMAP plots are generated to visualize the clusters of cells based on Ig classes.
+2. **Scatter Plots of Ig Subclasses**: These are used to analyze the distribution of different Ig subclasses across cells.
+
+#### Subsetting Data
+
+- **Filtering**: Cells can be filtered out based on their expression of specific Ig classes or subclasses or under certain conditions like `negA` or `negM`.
+
+#### Further Explorations
+
+1. **Data log scaling**: Additional log scaling is performed for more advanced analyses.
+2. **Density Plots**: These are used to understand the distribution of cells across different Ig classes.
+
+#### Merged Blocks for Code Efficiency
+
+- A combined block for Ig annotation steps
+- A combined block for visualization steps
+
+---
+
+By modularizing each notebook into distinct sections, the analysis becomes more interpretable and manageable, aiding in debugging and modification.
 
 
