@@ -62,3 +62,62 @@ def adjust_color_alpha(hex_color, alpha):
     # Add the alpha component
     rgba_color = (*rgb_color, alpha)
     return rgba_color
+
+
+def categorize_location(text):
+    """
+    Categorizes the cellular location of a protein based on the text description.
+    
+    Parameters:
+        text (str): The text description containing information about the cellular location.
+        
+    Returns:
+        list: A list of unique categories representing the cellular locations.
+    """
+    
+    categories = []  # List to store the categories of cellular locations
+    text = text.lower()  # Convert the text to lowercase for uniformity
+    
+    # Remove text in curly braces and split by punctuation marks
+    clean_text = ''.join(c for c in text if c not in '{}[]()')
+    locations = clean_text.split(';')[0]
+    locations = locations.split('.')
+    locations = [location.strip() for loc in locations for location in loc.split(',')]
+    
+    # Remove text from notes
+    text = text.split('note=')[0]
+    
+    # Check for the presence of the keywords in each parsed location
+    for location in locations:
+        if 'golgi' in location:
+            if ('cis-golgi') in location:
+                categories.append('cis-Golgi')
+            elif ('trans-golgi') in location:
+                categories.append('trans-Golgi')
+            else:
+                categories.append('Golgi')
+        elif 'cytoplasm' in location:
+            categories.append('Cytoplasm')
+        elif 'nucleus' in location:
+            categories.append('Nucleus')
+        elif ('mitochondrion' or 'mitochondria') in location:
+            categories.append('Mitochondria')
+        elif ('endosome') in location:
+            if ('early endosome') in location:
+                categories.append('Early Endosome')
+            elif ('late endosome') in location:
+                categories.append('Late Endosome')
+            elif ('recycling endosome') in location:
+                categories.append('Recycling Endosome')
+            else:
+                categories.append('Endosome')
+        elif ('lysosome') in location:
+            categories.append('Lysosome')
+        elif ('endoplasmic reticulum') in location:
+            categories.append('Endoplasmic Reticulum')
+        elif ('membrane') in location:
+            categories.append('Plasma Membrane')
+        elif ('phagosome') in location:
+            categories.append('Phagosome')
+            
+    return list(set(categories))  # Using set to remove duplicate categories, if any
