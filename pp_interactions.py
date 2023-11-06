@@ -29,6 +29,7 @@ def fetch_string_interactions(gene_list):
                 protein1 = interaction['preferredName_A']
                 protein2 = interaction['preferredName_B']
                 score = interaction['score']
+                print(f'protein {protein1} and protein {protein2} have a score of {score}')
                 
                 # Add nodes and edges to the graph
                 G.add_node(protein1)
