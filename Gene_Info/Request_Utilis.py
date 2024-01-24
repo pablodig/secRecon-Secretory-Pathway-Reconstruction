@@ -123,6 +123,7 @@ def Gene_Info_from_EntrezID(EntrezID):
             gene_ensemble = (gene_db_refs['Dbtag_tag']['Object-id']['Object-id_str'])
         
     print("Organism: ", org, "|Entrez ID: ", EntrezID, "|Gene Symbol: ", gene_symbol, "|Gene Name: ", gene_name, "|Gene Synonyms: ", gene_synonyms, "| Gene Ensemble: ", gene_ensemble)
+  
     for assembly_specific_info in gene_record[0]['Entrezgene_locus']:  
         if 'Gene-commentary_heading' in assembly_specific_info:
             for assembly_specific_transcript in assembly_specific_info['Gene-commentary_products']:
