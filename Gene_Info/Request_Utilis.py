@@ -5,6 +5,23 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
+def get_entrez_id(gene_symbol, database="gene", organism="Homo sapiens"):
+    search_term = f"{gene_symbol}[Gene Name] AND {organism}[Organism]"
+    
+    try:
+        handle = Entrez.esearch(db=database, term=search_term)
+        record = Entrez.read(handle)
+        handle.close()
+
+        # Check if any IDs were found
+        if record["IdList"]:
+            return record["IdList"][0]  # Returns the first ID found
+        else:
+            return "No ID found for given gene symbol"
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
+
 def read_gene_ID(gene_EntrezID):
     gene_fetch_tries = 0
     gene_fetch_found = True
@@ -99,6 +116,7 @@ def Gene_Info_from_EntrezID(EntrezID):
     transcript_sequence_ID_list = []
     gene_record = read_gene_ID(int(EntrezID))
 
+    gene_products = []
     org = gene_record[0]['Entrezgene_source']['BioSource']['BioSource_org']['Org-ref']['Org-ref_taxname']
     if 'Gene-ref_syn' in gene_record[0]['Entrezgene_gene']['Gene-ref']:
         gene_synonyms = gene_record[0]['Entrezgene_gene']['Gene-ref']['Gene-ref_syn']
@@ -110,7 +128,7 @@ def Gene_Info_from_EntrezID(EntrezID):
         gene_symbol = gene_record[0]['Entrezgene_gene']['Gene-ref']['Gene-ref_locus']                        
     else:
         gene_symbol = gene_record[0]['Entrezgene_gene']['Gene-ref']['Gene-ref_locus-tag']
-        
+
     # Get the Gene description
     if 'Gene-ref_desc' in gene_record[0]['Entrezgene_gene']['Gene-ref']:
         gene_name = gene_record[0]['Entrezgene_gene']['Gene-ref']['Gene-ref_desc']
@@ -121,17 +139,14 @@ def Gene_Info_from_EntrezID(EntrezID):
     for gene_db_refs in gene_record[0]['Entrezgene_gene']['Gene-ref']['Gene-ref_db']:
         if gene_db_refs['Dbtag_db'] == 'Ensembl':
             gene_ensemble = (gene_db_refs['Dbtag_tag']['Object-id']['Object-id_str'])
-        
-    print("Organism: ", org, "|Entrez ID: ", EntrezID, "|Gene Symbol: ", gene_symbol, "|Gene Name: ", gene_name, "|Gene Synonyms: ", gene_synonyms, "| Gene Ensemble: ", gene_ensemble)
-  
+
+    #print("Organism: ", org, "|Entrez ID: ", EntrezID, "|Gene Symbol: ", gene_symbol, "|Gene Name: ", gene_name, "|Gene Synonyms: ", gene_synonyms, "| Gene Ensemble: ", gene_ensemble)
+
     for assembly_specific_info in gene_record[0]['Entrezgene_locus']:  
         if 'Gene-commentary_heading' in assembly_specific_info:
             for assembly_specific_transcript in assembly_specific_info['Gene-commentary_products']:
                 if 'Gene-commentary_products' in assembly_specific_transcript:
                     transcript_sequence_ID = assembly_specific_transcript['Gene-commentary_accession']
-
-                    print("|mRNA: ", transcript_sequence_ID)
-                    transcript_sequence_ID_list.append(transcript_sequence_ID)
 
                     for Entrez_Comments in gene_record[0]['Entrezgene_comments']:
                         if 'Gene-commentary_comment' in Entrez_Comments:
@@ -145,13 +160,13 @@ def Gene_Info_from_EntrezID(EntrezID):
                                                     protein_sequence_ID = protein_per_transcript_per_assemlby['Gene-commentary_accession']
 
                                                     uniprotID_list = []
-                                                    for protein_comments in protein_per_transcript_per_assemlby['Gene-commentary_comment']:
-                                                        if protein_comments['Gene-commentary_heading'] == 'UniProtKB':
-                                                            for uniprotID_protein_per_assembly in protein_comments['Gene-commentary_comment'][0]['Gene-commentary_source']:
-                                                                protein_uniprot_id = uniprotID_protein_per_assembly['Other-source_src']['Dbtag']['Dbtag_tag']['Object-id']['Object-id_str']
-                                                                uniprotID_list.append(protein_uniprot_id)
-                                                    print("|Protein: ", protein_sequence_ID, uniprotID_list)
-                                                    protein_sequence_ID_list.append(protein_sequence_ID)                                       
+                                                    if 'Gene-commentary_comment' in protein_per_transcript_per_assemlby:
+                                                        for protein_comments in protein_per_transcript_per_assemlby['Gene-commentary_comment']:
+                                                            if protein_comments['Gene-commentary_heading'] == 'UniProtKB':
+                                                                for uniprotID_protein_per_assembly in protein_comments['Gene-commentary_comment'][0]['Gene-commentary_source']:
+                                                                    protein_uniprot_id = uniprotID_protein_per_assembly['Other-source_src']['Dbtag']['Dbtag_tag']['Object-id']['Object-id_str']
+                                                                    uniprotID_list.append(protein_uniprot_id)
+                                                    gene_products.append(((transcript_sequence_ID, protein_sequence_ID, uniprotID_list)))                                       
                                         else:   
                                             if 'Gene-commentary_products' in product_per_assembly:
                                                 for transcript_per_assembly in product_per_assembly['Gene-commentary_products']:      
@@ -168,6 +183,6 @@ def Gene_Info_from_EntrezID(EntrezID):
                                                                             uniprotID_list.append(protein_uniprot_id)
                                                             else:
                                                                 uniprotID_list = []
-                                                            print("|Protein: ", protein_sequence_ID, uniprotID_list)
-                                                            protein_sequence_ID_list.append(protein_sequence_ID)
-    return None
+                                                            gene_products.append(((transcript_sequence_ID, protein_sequence_ID, uniprotID_list)))
+
+    return org, gene_symbol, gene_name, gene_synonyms, gene_ensemble, gene_products
