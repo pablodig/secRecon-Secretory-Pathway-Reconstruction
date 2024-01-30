@@ -136,10 +136,13 @@ def Gene_Info_from_EntrezID(EntrezID):
         gene_name = gene_record[0]['Entrezgene_locus'][0]['Gene-commentary_products'][0]['Gene-commentary_label']
 
     # Get Ensemble ID
-    for gene_db_refs in gene_record[0]['Entrezgene_gene']['Gene-ref']['Gene-ref_db']:
-        if gene_db_refs['Dbtag_db'] == 'Ensembl':
-            gene_ensemble = (gene_db_refs['Dbtag_tag']['Object-id']['Object-id_str'])
-
+    try:
+        for gene_db_refs in gene_record[0]['Entrezgene_gene']['Gene-ref']['Gene-ref_db']:
+            if gene_db_refs['Dbtag_db'] == 'Ensembl':
+                gene_ensemble = (gene_db_refs['Dbtag_tag']['Object-id']['Object-id_str'])
+    except KeyError:
+        print(f"No ENSEMBL ID for gene {gene_symbol}")
+        gene_ensemble = ''
     #print("Organism: ", org, "|Entrez ID: ", EntrezID, "|Gene Symbol: ", gene_symbol, "|Gene Name: ", gene_name, "|Gene Synonyms: ", gene_synonyms, "| Gene Ensemble: ", gene_ensemble)
 
     for assembly_specific_info in gene_record[0]['Entrezgene_locus']:  
