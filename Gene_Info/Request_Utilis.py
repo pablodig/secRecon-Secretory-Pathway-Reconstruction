@@ -1,7 +1,6 @@
 from Bio import Entrez
 import time
 import requests
-import requests
 from bs4 import BeautifulSoup
 import json
 
@@ -106,17 +105,28 @@ def get_gene_ids(gene_entrezID, target_tax_id):
         gene_data_end = script_content.find(';', gene_data_start)
         gene_data_json = script_content[gene_data_start:gene_data_end]
         genes_data = json.loads(gene_data_json)
-        for gene_info in genes_data:
-            if gene_info.get('tax_id') == int(target_tax_id):
-                gene_id_orth = (gene_info.get('gene_id'))
-        return gene_id_orth
+        if not genes_data:
+            gene_id_orth = None
+        else:
+            for gene_info in genes_data:
+                if gene_info.get('tax_id') == int(target_tax_id):
+                    gene_id_orth = (gene_info.get('gene_id'))
+                    return gene_id_orth
+                else:
+                    gene_id_orth = None
+    elif response.status_code != 200:
+        print(f'No accession for gene {gene_entrezID}')
+        gene_id_orth = None
+
+    return gene_id_orth
     
 def Gene_Info_from_EntrezID(EntrezID):
     protein_sequence_ID_list = []
     transcript_sequence_ID_list = []
+    gene_ensemble = ''
     gene_record = read_gene_ID(int(EntrezID))
-
     gene_products = []
+    
     org = gene_record[0]['Entrezgene_source']['BioSource']['BioSource_org']['Org-ref']['Org-ref_taxname']
     if 'Gene-ref_syn' in gene_record[0]['Entrezgene_gene']['Gene-ref']:
         gene_synonyms = gene_record[0]['Entrezgene_gene']['Gene-ref']['Gene-ref_syn']
@@ -142,50 +152,51 @@ def Gene_Info_from_EntrezID(EntrezID):
                 gene_ensemble = (gene_db_refs['Dbtag_tag']['Object-id']['Object-id_str'])
     except KeyError:
         print(f"No ENSEMBL ID for gene {gene_symbol}")
-        gene_ensemble = ''
-    #print("Organism: ", org, "|Entrez ID: ", EntrezID, "|Gene Symbol: ", gene_symbol, "|Gene Name: ", gene_name, "|Gene Synonyms: ", gene_synonyms, "| Gene Ensemble: ", gene_ensemble)
 
     for assembly_specific_info in gene_record[0]['Entrezgene_locus']:  
-        if 'Gene-commentary_heading' in assembly_specific_info:
-            for assembly_specific_transcript in assembly_specific_info['Gene-commentary_products']:
-                if 'Gene-commentary_products' in assembly_specific_transcript:
-                    transcript_sequence_ID = assembly_specific_transcript['Gene-commentary_accession']
+        try:
+            if 'Gene-commentary_heading' in assembly_specific_info:
+                for assembly_specific_transcript in assembly_specific_info['Gene-commentary_products']:
+                    if 'Gene-commentary_products' in assembly_specific_transcript:
+                        transcript_sequence_ID = assembly_specific_transcript['Gene-commentary_accession']
 
-                    for Entrez_Comments in gene_record[0]['Entrezgene_comments']:
-                        if 'Gene-commentary_comment' in Entrez_Comments:
-                            for comments in Entrez_Comments['Gene-commentary_comment']:
-                                if 'Gene-commentary_products' in comments:
-                                    for product_per_assembly in comments['Gene-commentary_products']:                                
-                                        if product_per_assembly['Gene-commentary_heading'] == 'mRNA Sequence':
-                                            mRNA = product_per_assembly['Gene-commentary_accession']
-                                            if mRNA == transcript_sequence_ID:  
-                                                for protein_per_transcript_per_assemlby in product_per_assembly['Gene-commentary_products']:
-                                                    protein_sequence_ID = protein_per_transcript_per_assemlby['Gene-commentary_accession']
+                        for Entrez_Comments in gene_record[0]['Entrezgene_comments']:
+                            if 'Gene-commentary_comment' in Entrez_Comments:
+                                for comments in Entrez_Comments['Gene-commentary_comment']:
+                                    if 'Gene-commentary_products' in comments:
+                                        for product_per_assembly in comments['Gene-commentary_products']:                                
+                                            if product_per_assembly['Gene-commentary_heading'] == 'mRNA Sequence':
+                                                mRNA = product_per_assembly['Gene-commentary_accession']
+                                                if mRNA == transcript_sequence_ID:  
+                                                    for protein_per_transcript_per_assemlby in product_per_assembly['Gene-commentary_products']:
+                                                        protein_sequence_ID = protein_per_transcript_per_assemlby['Gene-commentary_accession']
 
-                                                    uniprotID_list = []
-                                                    if 'Gene-commentary_comment' in protein_per_transcript_per_assemlby:
-                                                        for protein_comments in protein_per_transcript_per_assemlby['Gene-commentary_comment']:
-                                                            if protein_comments['Gene-commentary_heading'] == 'UniProtKB':
-                                                                for uniprotID_protein_per_assembly in protein_comments['Gene-commentary_comment'][0]['Gene-commentary_source']:
-                                                                    protein_uniprot_id = uniprotID_protein_per_assembly['Other-source_src']['Dbtag']['Dbtag_tag']['Object-id']['Object-id_str']
-                                                                    uniprotID_list.append(protein_uniprot_id)
-                                                    gene_products.append(((transcript_sequence_ID, protein_sequence_ID, uniprotID_list)))                                       
-                                        else:   
-                                            if 'Gene-commentary_products' in product_per_assembly:
-                                                for transcript_per_assembly in product_per_assembly['Gene-commentary_products']:      
-                                                    mRNA = transcript_per_assembly['Gene-commentary_accession']          
-                                                    if mRNA == transcript_sequence_ID:                                                  
-                                                        for protein_per_transcript_per_assemlby in transcript_per_assembly['Gene-commentary_products']:                                                                
-                                                            protein_sequence_ID = protein_per_transcript_per_assemlby['Gene-commentary_accession']
-                                                            uniprotID_list = []
-                                                            if 'Gene-commentary_comment' in protein_per_transcript_per_assemlby:
-                                                                for protein_comments in protein_per_transcript_per_assemlby['Gene-commentary_comment']:                                                         
-                                                                    if protein_comments['Gene-commentary_heading'] == 'UniProtKB':
-                                                                        for uniprotID_protein_per_assembly in protein_comments['Gene-commentary_comment'][0]['Gene-commentary_source']:
-                                                                            protein_uniprot_id = uniprotID_protein_per_assembly['Other-source_src']['Dbtag']['Dbtag_tag']['Object-id']['Object-id_str']
-                                                                            uniprotID_list.append(protein_uniprot_id)
-                                                            else:
+                                                        uniprotID_list = []
+                                                        if 'Gene-commentary_comment' in protein_per_transcript_per_assemlby:
+                                                            for protein_comments in protein_per_transcript_per_assemlby['Gene-commentary_comment']:
+                                                                if protein_comments['Gene-commentary_heading'] == 'UniProtKB':
+                                                                    for uniprotID_protein_per_assembly in protein_comments['Gene-commentary_comment'][0]['Gene-commentary_source']:
+                                                                        protein_uniprot_id = uniprotID_protein_per_assembly['Other-source_src']['Dbtag']['Dbtag_tag']['Object-id']['Object-id_str']
+                                                                        uniprotID_list.append(protein_uniprot_id)
+                                                        gene_products.append(((transcript_sequence_ID, protein_sequence_ID, uniprotID_list)))                                       
+                                            else:   
+                                                if 'Gene-commentary_products' in product_per_assembly:
+                                                    for transcript_per_assembly in product_per_assembly['Gene-commentary_products']:      
+                                                        mRNA = transcript_per_assembly['Gene-commentary_accession']          
+                                                        if mRNA == transcript_sequence_ID:                                                  
+                                                            for protein_per_transcript_per_assemlby in transcript_per_assembly['Gene-commentary_products']:                                                                
+                                                                protein_sequence_ID = protein_per_transcript_per_assemlby['Gene-commentary_accession']
                                                                 uniprotID_list = []
-                                                            gene_products.append(((transcript_sequence_ID, protein_sequence_ID, uniprotID_list)))
+                                                                if 'Gene-commentary_comment' in protein_per_transcript_per_assemlby:
+                                                                    for protein_comments in protein_per_transcript_per_assemlby['Gene-commentary_comment']:                                                         
+                                                                        if protein_comments['Gene-commentary_heading'] == 'UniProtKB':
+                                                                            for uniprotID_protein_per_assembly in protein_comments['Gene-commentary_comment'][0]['Gene-commentary_source']:
+                                                                                protein_uniprot_id = uniprotID_protein_per_assembly['Other-source_src']['Dbtag']['Dbtag_tag']['Object-id']['Object-id_str']
+                                                                                uniprotID_list.append(protein_uniprot_id)
+                                                                else:
+                                                                    uniprotID_list = []
+                                                                gene_products.append(((transcript_sequence_ID, protein_sequence_ID, uniprotID_list)))
+        except KeyError:
+            print(f'Gene {gene_symbol} has no products')
 
     return org, gene_symbol, gene_name, gene_synonyms, gene_ensemble, gene_products
