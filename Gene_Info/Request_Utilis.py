@@ -103,22 +103,26 @@ def get_gene_ids(gene_entrezID, target_tax_id):
         script_content = script_tag.text if script_tag else ""
         gene_data_start = script_content.find('appData.genes =') + len('appData.genes =')
         gene_data_end = script_content.find(';', gene_data_start)
-        gene_data_json = script_content[gene_data_start:gene_data_end]
-        genes_data = json.loads(gene_data_json)
-        if not genes_data:
-            gene_id_orth = None
-        else:
-            for gene_info in genes_data:
-                if gene_info.get('tax_id') == int(target_tax_id):
-                    gene_id_orth = (gene_info.get('gene_id'))
-                    return gene_id_orth
-                else:
-                    gene_id_orth = None
-    elif response.status_code != 200:
-        print(f'No accession for gene {gene_entrezID}')
-        gene_id_orth = None
+        gene_data_json = script_content[gene_data_start:gene_data_end].strip()
 
-    return gene_id_orth
+        # Ensure gene_data_json is not empty
+        if gene_data_json:
+            try:
+                genes_data = json.loads(gene_data_json)
+                for gene_info in genes_data:
+                    if gene_info.get('tax_id') == int(target_tax_id):
+                        return gene_info.get('gene_id')
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON: {e}")
+                return None
+        else:
+            print("No gene data found in the page.")
+            return None
+    else:
+        print(f'No accession for gene {gene_entrezID}')
+        return None
+
+    return None
     
 def Gene_Info_from_EntrezID(EntrezID):
     protein_sequence_ID_list = []
