@@ -1,6 +1,54 @@
 import matplotlib.colors as mcolors
 import numpy as np
 
+def integrate_dicts(gene_dict, process_dict):
+    """
+    Integrate gene_dict with additional system, subsystem, and process information from process_dict
+    based on matching processes, organizing them under separate subkeys for each gene.
+
+    Args:
+    gene_dict (dict): Dictionary of genes with their processes and subcellular localization.
+    process_dict (dict): Dictionary categorizing biological processes into systems and subsystems.
+
+    Returns:
+    dict: Updated gene_dict with separate subkeys for system, subsystem, and process information.
+    """
+    
+    # Function to find and update system, subsystem, and process information for a given process name.
+    def update_system_subsystem_process(gene_details, process_name):
+        for system, process_list in process_dict.items():
+            for process in process_list:
+                # Check if the process matches the given process_name and update accordingly.
+                if 'Process' in process and process['Process'] == process_name:
+                    gene_details['system'].add(system)
+                    gene_details['subsystem'].add(process['Subsystem'])
+                    gene_details['process'].add(process_name)
+                    if 'Subprocess' in process:
+                        gene_details['process'].add(process['Subprocess'])
+                elif 'Subprocess' in process and process['Subprocess'] == process_name:
+                    gene_details['system'].add(system)
+                    gene_details['subsystem'].add(process['Subsystem'])
+                    gene_details['process'].add(process['Process'])
+    
+    # Iterate through each gene in gene_dict and update with system, subsystem, and process info.
+    for gene, details in gene_dict.items():
+        # Initialize sets to ensure uniqueness.
+        details['system'] = set()
+        details['subsystem'] = set()
+        details['process'] = set()
+        
+        for process in details['processes']:
+            update_system_subsystem_process(details, process)  # Update details with the found information.
+        
+        # Convert sets back to lists for JSON compatibility.
+        details['system'] = list(details['system'])
+        details['subsystem'] = list(details['subsystem'])
+        details['process'] = list(details['process'])
+    
+    return gene_dict
+
+    
+
 def get_gene_color(gene, gene_dict, process_dict, category_colors):
 
     """
