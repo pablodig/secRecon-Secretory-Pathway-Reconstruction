@@ -18,13 +18,18 @@ def integrate_dicts(gene_dict, process_dict):
     def update_system_subsystem_process(gene_details, process_name):
         for system, process_list in process_dict.items():
             for process in process_list:
+                # Check if the process is in the category of the systems
+                if system == process_name:
+                    gene_details['system'].add(system)
+                # Check if the process is in the category of the subsystems
+                elif process['Subsystem'] == process_name:
+                    gene_details['system'].add(system)
+                    gene_details['subsystem'].add(process['Subsystem'])
                 # Check if the process matches the given process_name and update accordingly.
-                if 'Process' in process and process['Process'] == process_name:
+                elif 'Process' in process and process['Process'] == process_name:
                     gene_details['system'].add(system)
                     gene_details['subsystem'].add(process['Subsystem'])
                     gene_details['process'].add(process_name)
-                    if 'Subprocess' in process:
-                        gene_details['process'].add(process['Subprocess'])
                 elif 'Subprocess' in process and process['Subprocess'] == process_name:
                     gene_details['system'].add(system)
                     gene_details['subsystem'].add(process['Subsystem'])
