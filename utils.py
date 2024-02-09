@@ -1,5 +1,7 @@
 import matplotlib.colors as mcolors
 import numpy as np
+import pandas as pd
+from collections import Counter
 
 def integrate_dicts(gene_dict, process_dict):
     """
@@ -179,3 +181,59 @@ def categorize_location(text):
             categories.append('Phagosome')
             
     return list(set(categories))  # Using set to remove duplicate categories, if any
+
+
+
+
+def identify_enriched_processes(clusters_dict, gene_dict, process_key='processes'):
+    """
+    Identifies and normalizes the enrichment of processes across gene clusters.
+    
+    This function calculates the count of each process within each cluster,
+    normalizes these counts by the total occurrences of each process in the
+    original dataset, and returns a DataFrame with these normalized counts
+    alongside their raw counts for comparison.
+
+    Parameters:
+    - clusters_dict (dict): A dictionary where each key is a cluster identifier and
+      each value is a dict of genes, with their associated data including processes.
+    - gene_dict (dict): A dictionary representing the original dataset, where each key
+      is a gene identifier and each value is a dict of gene data, including processes.
+    - process_key (str): The key used in gene data dicts to access the list of processes.
+      Defaults to 'processes'.
+
+    Returns:
+    - pd.DataFrame: A DataFrame containing the cluster identifier, process names,
+      raw counts of processes in each cluster, total counts of processes in the
+      original dataset, and the normalized count (raw count / total count).
+    """
+    cluster_data = []
+    original_process_counts = Counter()
+
+    # Count occurrences of each process in the original dataset to establish a baseline for normalization
+    for gene, data in gene_dict.items():
+        if data.get(process_key):
+            original_process_counts.update(data[process_key])
+
+    # Analyze each cluster to count occurrences of processes and prepare data for normalization
+    for cluster_id, genes in clusters_dict.items():
+        all_processes = [data[process_key] for gene, data in genes.items() if data.get(process_key)]
+        process_counts = Counter([process for sublist in all_processes for process in sublist])
+        
+        # Collect data for each process in the current cluster, including total counts from the original dataset
+        for process, count in process_counts.items():
+            cluster_data.append({
+                'Cluster': cluster_id,
+                'Process': process,
+                'Count': count,
+                'Total_Count': original_process_counts.get(process, 0)  # Default to 0 if process not found
+            })
+
+    df = pd.DataFrame(cluster_data)
+
+    # Normalize the counts (raw count in cluster / total count in original dataset)
+    # Replace 0 with pd.NA to avoid division by zero and maintain data integrity
+    df['Normalized_Count'] = df['Count'] / df['Total_Count'].replace(0, pd.NA)
+
+    return df
+
