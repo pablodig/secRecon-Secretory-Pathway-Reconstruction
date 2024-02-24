@@ -147,7 +147,11 @@ def Gene_Info_from_EntrezID(EntrezID):
     if 'Gene-ref_desc' in gene_record[0]['Entrezgene_gene']['Gene-ref']:
         gene_name = gene_record[0]['Entrezgene_gene']['Gene-ref']['Gene-ref_desc']
     else:
-        gene_name = gene_record[0]['Entrezgene_locus'][0]['Gene-commentary_products'][0]['Gene-commentary_label']
+        try:
+            gene_name = gene_record[0]['Entrezgene_locus'][0]['Gene-commentary_products'][0]['Gene-commentary_label']
+        except KeyError:
+            print(f'No description anotated for gene {gene_symbol}')
+
 
     # Get Ensemble ID
     try:
