@@ -208,3 +208,36 @@ def Gene_Info_from_EntrezID(EntrezID):
             print(f'Gene {gene_symbol} has no products')
 
     return org, gene_symbol, gene_name, gene_synonyms, gene_ensemble, gene_products
+
+
+
+def get_subcellular_localization(uniprot_id):
+    """
+    Corrected function to fetch the subcellular location of a protein using the UniProt REST API,
+    based on the updated understanding of the JSON structure.
+    
+    Parameters:
+    - uniprot_id (str): The UniProt ID of the protein.
+    
+    Returns:
+    - str: The subcellular location of the protein or an error message.
+    """
+    api_url = f"https://rest.uniprot.org/uniprotkb/{uniprot_id}.json"
+    
+    try:
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            data = response.json()
+            for comment in data.get("comments", []):
+                if comment.get("commentType") == "SUBCELLULAR LOCATION":
+                    locations = comment.get("subcellularLocations", [])
+                    if locations:
+                        location_descriptions = [loc["location"]["value"] for loc in locations if "location" in loc]
+                        return location_descriptions
+            return None
+        elif response.status_code in [400, 404]:
+            return response.json().get("messages", ["Error occurred"])[0]
+        else:
+            return "Failed to fetch data due to an error on the server."
+    except requests.RequestException as e:
+        return f"Error fetching data for UniProt ID {uniprot_id}: {e}"
