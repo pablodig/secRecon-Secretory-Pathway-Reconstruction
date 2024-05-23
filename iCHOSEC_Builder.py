@@ -47,7 +47,7 @@ def count_AAs(sequence):
 #Useful for translation and protein degradation pathway
 
 def substitute_AAs_count(formula,AAcounts):
-    template = "? gly[c] + ? ala_L[c] + ? val_L[c] + ? leu_L[c] + ? ile_L[c] + ? met_L[c] + ? trp_L[c] + ? phe_L[c] + ? pro_L[c] + ? ser_L[c] + ? thr_L[c] + ? cys_L[c] + ? tyr_L[c] + ? asn_L[c] + ? gln_L[c] + ? glu_L[c] + ? asp_L[c] + ? lys_L[c] + ? arg_L[c] + ? his_L[c]"
+    template = "? gly_c + ? ala_L_c + ? val_L_c + ? leu_L_c + ? ile_L_c + ? met_L_c + ? trp_L_c + ? phe_L_c + ? pro_L_c + ? ser_L_c + ? thr_L_c + ? cys_L_c + ? tyr_L_c + ? asn_L_c + ? gln_L_c + ? glu_L_c + ? asp_L_c + ? lys_L_c + ? arg_L_c + ? his_L_c"
     new = ''
     index = 0
     for character in template:
@@ -67,17 +67,17 @@ def translate_protein(entryID):
     sequence = PSI_row[11]
     AAcounts = count_AAs(sequence)
     N = len(sequence) #Number to replace atp's, gtp's, ppi's, pi's, h2o's, amp's, and gpd's
-    templateFormula = "? h2o[c] + ? atp[c] + ? gtp[c] + ? gly[c] + ? ala_L[c] + ? val_L[c] + ? leu_L[c] + ? ile_L[c] + ? met_L[c] + ? trp_L[c] + ? phe_L[c] + ? pro_L[c] + ? ser_L[c] + ? thr_L[c] + ? cys_L[c] + ? tyr_L[c] + ? asn_L[c] + ? gln_L[c] + ? glu_L[c] + ? asp_L[c] + ? lys_L[c] + ? arg_L[c] + ? his_L[c] -> ? h[c] + ? amp[c] + adp[c] + ? pi[c] + ? gdp[c] + ? ppi[c] + XXX[c]"
+    templateFormula = "? h2o_c + ? atp_c + ? gtp_c + ? gly_c + ? ala_L_c + ? val_L_c + ? leu_L_c + ? ile_L_c + ? met_L_c + ? trp_L_c + ? phe_L_c + ? pro_L_c + ? ser_L_c + ? thr_L_c + ? cys_L_c + ? tyr_L_c + ? asn_L_c + ? gln_L_c + ? glu_L_c + ? asp_L_c + ? lys_L_c + ? arg_L_c + ? his_L_c --> ? h_c + ? amp_c + adp_c + ? pi_c + ? gdp_c + ? ppi_c + XXX_c"
     translationFormula = substitute_AAs_count(templateFormula, AAcounts)
-    translationFormula = translationFormula.replace("? h2o[c]",str(2*N-1)+" h2o[c]")
-    translationFormula = translationFormula.replace("? h[c]",str(2*N-1)+" h[c]")
-    translationFormula = translationFormula.replace("? ppi[c]",str(N)+" ppi[c]")
-    translationFormula = translationFormula.replace("? pi[c]",str(2*N-1)+" pi[c]")
-    translationFormula = translationFormula.replace("? gdp[c]",str(2*N-2)+" gdp[c]")
-    translationFormula = translationFormula.replace("? amp[c]",str(N)+" amp[c]")
-    translationFormula = translationFormula.replace("? gtp[c]",str(2*N-2)+" gtp[c]")
-    translationFormula = translationFormula.replace("? atp[c]",str(N+1)+" atp[c]")
-    translationFormula = translationFormula.replace("XXX[c]",str(entryID)+"[c]")
+    translationFormula = translationFormula.replace("? h2o_c",str(2*N-1)+" h2o_c")
+    translationFormula = translationFormula.replace("? h_c",str(2*N-1)+" h_c")
+    translationFormula = translationFormula.replace("? ppi_c",str(N)+" ppi_c")
+    translationFormula = translationFormula.replace("? pi_c",str(2*N-1)+" pi_c")
+    translationFormula = translationFormula.replace("? gdp_c",str(2*N-2)+" gdp_c")
+    translationFormula = translationFormula.replace("? amp_c",str(N)+" amp_c")
+    translationFormula = translationFormula.replace("? gtp_c",str(2*N-2)+" gtp_c")
+    translationFormula = translationFormula.replace("? atp_c",str(N+1)+" atp_c")
+    translationFormula = translationFormula.replace("XXX_c",str(entryID)+"_c")
     return translationFormula
 
 # Function that replaces the XXX template name for the UniProt ID
@@ -176,7 +176,7 @@ def generateProteinSpecificRxns_A(entryID):
             rxns[i] = insert_prot_name_in_rxnFormula(rxns[i],protName)
         for i in range(len(rxnNames)):
             rxnNames[i] = insert_prot_name_in_rxnName(rxnNames[i],protName)
-        rxns.append(protName + '[c] -> ')
+        rxns.append(protName + '_c --> ')
         rxnNames.append(protName + '_Final_demand')
         GPRs.append('')
         return rxns,rxnNames,GPRs
@@ -194,7 +194,7 @@ def generateProteinSpecificRxns_A(entryID):
         number_BiP = L/40 #Number of BiPs depends on protein length http://www.cshperspectives.com/content/5/5/a013201.full
         for i in range(len(rxns)):
             rxns[i] = rxns[i].replace("!",str(number_BiP))
-        connector = 'XXX[r]'
+        connector = 'XXX_r'
         
 #------------------------------------------------------------------------------
     #Add Disulphide Bond Reactions
@@ -202,7 +202,7 @@ def generateProteinSpecificRxns_A(entryID):
         number_DSB = PSI[2]
         DSBrxns = []
         DSBrxnNames = []
-        DSBrxns.append(connector + ' -> XXX_preDSB[r]')
+        DSBrxns.append(connector + ' --> XXX_preDSB_r')
         DSBrxnNames.append('Start_DSB')
         [DSBrxns, DSBrxnNames] = addPathwayFromCondition('DSB>0',DSBrxns,DSBrxnNames)
         for i in range(len(DSBrxns)):
@@ -212,7 +212,7 @@ def generateProteinSpecificRxns_A(entryID):
                 else:
                     DSBrxns[i] = DSBrxns[i].replace('?',number_DSB)
         
-        connector = 'XXX_DSB[r]'
+        connector = 'XXX_DSB_r'
 
         for reaction in DSBrxns:
                 rxns.append(reaction)
@@ -221,14 +221,14 @@ def generateProteinSpecificRxns_A(entryID):
 #------------------------------------------------------------------------------              
     #Add GPI reactions
     if PSI[3] == '1':
-        rxns.append(connector + ' -> XXX_preGPI[r]')
+        rxns.append(connector + ' --> XXX_preGPI_r')
         rxnNames.append('Start_GPI')
         [rxns,rxnNames] = addPathwayFromCondition('GPI=1',rxns,rxnNames)
-        connector = 'XXX-dgpi_cho[r]'
+        connector = 'XXX-dgpi_cho_r'
 #------------------------------------------------------------------------------    
     #Add N-glycosylation reactions
     if PSI[4] != '0': #Has N-glycans?
-        rxns.append(connector + ' -> XXX_preNG[r]')
+        rxns.append(connector + ' --> XXX_preNG_r')
         rxnNames.append('Start_NG')
         number_Nglycans = PSI[4] #Get number of N-Glycans
         NGlyrxns = []
@@ -237,11 +237,11 @@ def generateProteinSpecificRxns_A(entryID):
         [NGlyrxns,NGlyrxnNames] = addPathwayFromCondition('NG>0',NGlyrxns,NGlyrxnNames)
         [NGlyrxns,NGlyrxnNames] = addPathway('Golgi processing N',NGlyrxns,NGlyrxnNames)
         for i in range(len(NGlyrxns)): #Change the '?' for the number of N-glycans
-            if NGlyrxns[i] == 'XXX-M5-unfold-UBIQP[c] + ? h2o[c] + RAD23A[c] =>  XXX-unfold-UBIQP-RAD23A[c] + ? acgam[c] + ? man[c]':
+            if NGlyrxns[i] == 'XXX-M5-unfold-UBIQP_c + ? h2o_c + RAD23A_c =>  XXX-unfold-UBIQP-RAD23A_c + ? acgam_c + ? man_c':
                 h2o = str(7*int(number_Nglycans))
                 acgam = str(2*int(number_Nglycans))
                 man = str(5*int(number_Nglycans))
-                NGlyrxns[i] = 'XXX-M5-unfold-UBIQP[c] + ' + h2o +' h2o[c] + RAD23A[c] =>  XXX-unfold-UBIQP[c]-RAD23A[c] + ' + acgam + ' acgam[c] + ' + man +' man[c]'
+                NGlyrxns[i] = 'XXX-M5-unfold-UBIQP_c + ' + h2o +' h2o_c + RAD23A_c =>  XXX-unfold-UBIQP_c-RAD23A_c + ' + acgam + ' acgam_c + ' + man +' man_c'
             if '?' in NGlyrxns[i]:
                     if number_Nglycans == '1':
                         NGlyrxns[i] = NGlyrxns[i].replace('? ', '')
@@ -253,11 +253,11 @@ def generateProteinSpecificRxns_A(entryID):
         for reactionName in NGlyrxnNames:
             rxnNames.append(reactionName)
         
-        connector = 'XXX-M8B[r]'
+        connector = 'XXX-M8B_r'
    
 #------------------------------------------------------------------------------
     #Add  COPII reactions
-    if connector == 'XXX-M8B[r]':
+    if connector == 'XXX-M8B_r':
         copii_rxns = []
         copii_names = []
         [copii_rxns, copii_names] =  addPathway('COPII_NG',copii_rxns,copii_names)       
@@ -270,15 +270,15 @@ def generateProteinSpecificRxns_A(entryID):
         connector = 'XXX-M3-GN2[g]'
         
         #-------------- ADD IF PROTEIN = EPO (HUMAN)--------------------------#
-        # IMPORTANT! -> Reactions in this pathway assume EPO has NG=3 and Og=1 (see PSIM)
+        # IMPORTANT! --> Reactions in this pathway assume EPO has NG=3 and Og=1 (see PSIM)
         if protName == 'P01588':
-            rxns.append('P01588[c] -> EPO_Human[c]')
+            rxns.append('P01588_c --> EPO_Human_c')
             rxnNames.append('make_EPO')
             [rxns,rxnNames] = addPathway('Golgi processing (EPO specific)',rxns,rxnNames)
             connector = 'XXX-M3-GN4-GL4-NA4-F[g]'
             protName = 'EPO_Human'
         
-    elif connector == 'XXX-dgpi_cho[r]':
+    elif connector == 'XXX-dgpi_cho_r':
         copii_rxns = []
         copii_names = []
         [copii_rxns, copii_names] =  addPathway('COPII_GPI',copii_rxns,copii_names)       
@@ -290,7 +290,7 @@ def generateProteinSpecificRxns_A(entryID):
         #[rxns,rxnNames] = addPathway('COPII_GPI',rxns,rxnNames)
         connector = 'XXX-dgpi_cho[g]'
         
-    elif connector == 'XXX_DSB[r]':
+    elif connector == 'XXX_DSB_r':
         [rxns,rxnNames] = addPathway('COPII_DSB',rxns,rxnNames)
         
         copii_rxns = []
@@ -304,7 +304,7 @@ def generateProteinSpecificRxns_A(entryID):
         #[rxns,rxnNames] = addPathway('COPII-canonical',rxns,rxnNames)
         connector = 'XXX[g]'
     
-    elif connector == 'XXX[r]':
+    elif connector == 'XXX_r':
         [rxns,rxnNames] = addPathway('COPII-normal',rxns,rxnNames)
         
         copii_rxns = []
@@ -321,7 +321,7 @@ def generateProteinSpecificRxns_A(entryID):
 #------------------------------------------------------------------------------
     #Add O-glycosylation reactions
     if PSI[5] != '0': #Has O-glycans?    
-        rxns.append(connector + ' -> XXX_preOG[g]')
+        rxns.append(connector + ' --> XXX_preOG[g]')
         rxnNames.append('Start_OG')
         number_Oglycans = PSI[5] #Get number of O-Glycans
         OGlyrxns = []
@@ -346,7 +346,7 @@ def generateProteinSpecificRxns_A(entryID):
     #Stay in Golgi if protein is localized there
     if PSI[7] == '[g]' or PSI[7] == '[gm]':
         location = PSI[7]
-        #rxns.append(connector + ' -> XXX_mature' + location)
+        #rxns.append(connector + ' --> XXX_mature' + location)
         #rxnNames.append('Final_location_' + location)
         if 'SP_degradation' in rxnNames:
             SPaas = count_AAs(sequence[0:22]) #Amino acids in signal peptide assuming length is 22 on average
@@ -363,7 +363,7 @@ def generateProteinSpecificRxns_A(entryID):
             rxns[i] = insert_prot_name_in_rxnFormula(rxns[i],protName)
         for i in range(len(rxnNames)):
             rxnNames[i] = insert_prot_name_in_rxnName(rxnNames[i],protName)
-        rxns.append(protName + location + ' -> ')
+        rxns.append(protName + location + ' --> ')
         rxnNames.append(protName + '_Final_demand')
         GPRs.append('')    
         [rxns,rxnNames,GPRs] = addCanonicalRxns(rxns,rxnNames,GPRs)  
@@ -371,7 +371,7 @@ def generateProteinSpecificRxns_A(entryID):
 #------------------------------------------------------------------------------    
     #Add COPI
     elif PSI[7] == '[r]' or PSI[7] == '[rm]':
-        rxns.append(connector + ' -> XXX_preCOPI[g]')
+        rxns.append(connector + ' --> XXX_preCOPI[g]')
         rxnNames.append('Start_COPI')
         
         copi_rxns = []
@@ -382,21 +382,21 @@ def generateProteinSpecificRxns_A(entryID):
             rxns.append(copi_rxns[i])
             rxnNames.append(copi_names[i])
 
-        connector = 'XXX_mature[r]'
+        connector = 'XXX_mature_r'
         location = PSI[7]
         if location == '[r]':
-            rxns.append(connector + ' -> ')
+            rxns.append(connector + ' --> ')
             rxnNames.append(protName + '_Final_demand')
         elif location == '[rm]':
-            rxns.append(connector + ' -> XXX_mature' + location)
+            rxns.append(connector + ' --> XXX_mature' + location)
             rxnNames.append('Final_location_' + location)
-            rxns.append('XXX_mature' + location + ' -> ')
+            rxns.append('XXX_mature' + location + ' --> ')
             rxnNames.append(protName + '_Final_demand')
         
 #------------------------------------------------------------------------------
     #Add Clathrin vesicles
     elif PSI[7]=='[x]' or PSI[7]=='[l]' or PSI[7]=='[d]':
-        rxns.append(connector + ' -> XXX-preClathrin[g]')
+        rxns.append(connector + ' --> XXX-preClathrin[g]')
         rxnNames.append('Start_Clathrin_vesicle')
         
         clath_rxns = []
@@ -409,16 +409,16 @@ def generateProteinSpecificRxns_A(entryID):
         
         connector = 'XXX_mature[cv]'
         location = PSI[7]
-        rxns.append(connector + ' -> XXX_mature' + location)
+        rxns.append(connector + ' --> XXX_mature' + location)
         rxnNames.append('Final_location_' + location)
-        rxns.append('XXX_mature' + location + ' -> ')
+        rxns.append('XXX_mature' + location + ' --> ')
         rxnNames.append(protName + '_Final_demand')
         
 #------------------------------------------------------------------------------
     #Send to corresponding location
     else:
         location = PSI[7]
-        rxns.append(connector + ' -> XXX-preSV[g]')
+        rxns.append(connector + ' --> XXX-preSV[g]')
         rxnNames.append('Start_Secretion')
         
         sv_rxns = []
@@ -432,9 +432,9 @@ def generateProteinSpecificRxns_A(entryID):
         #[rxns,rxnNames] = addPathway("SV",rxns,rxnNames)
         if location == '':
             location = '[e]'
-        rxns.append('XXX_mature[sv]' + ' -> XXX_mature' + location)
+        rxns.append('XXX_mature[sv]' + ' --> XXX_mature' + location)
         rxnNames.append('Final_location_' + location)
-        rxns.append('XXX_mature' + location + ' -> ')
+        rxns.append('XXX_mature' + location + ' --> ')
         rxnNames.append('Final_demand')
 #------------------------------------------------------------------------------
     #Add coeffcients to SP_degradation and Ubiquitin_degradation reactions (if applicable)
@@ -483,17 +483,17 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
     #Add translation reaction
     AAcounts = count_AAs(sequence)
     N = len(sequence) #Number to replace atp's, gtp's, ppi's, pi's, h2o's, amp's, and gpd's
-    templateFormula = "? h2o[c] + ? atp[c] + ? gtp[c] + ? gly[c] + ? ala_L[c] + ? val_L[c] + ? leu_L[c] + ? ile_L[c] + ? met_L[c] + ? trp_L[c] + ? phe_L[c] + ? pro_L[c] + ? ser_L[c] + ? thr_L[c] + ? cys_L[c] + ? tyr_L[c] + ? asn_L[c] + ? gln_L[c] + ? glu_L[c] + ? asp_L[c] + ? lys_L[c] + ? arg_L[c] + ? his_L[c] -> ? h[c] + ? amp[c] + adp[c] + ? pi[c] + ? gdp[c] + ? ppi[c] + XXX[c]"
+    templateFormula = "? h2o_c + ? atp_c + ? gtp_c + ? gly_c + ? ala_L_c + ? val_L_c + ? leu_L_c + ? ile_L_c + ? met_L_c + ? trp_L_c + ? phe_L_c + ? pro_L_c + ? ser_L_c + ? thr_L_c + ? cys_L_c + ? tyr_L_c + ? asn_L_c + ? gln_L_c + ? glu_L_c + ? asp_L_c + ? lys_L_c + ? arg_L_c + ? his_L_c --> ? h_c + ? amp_c + adp_c + ? pi_c + ? gdp_c + ? ppi_c + XXX_c"
     translationFormula = substitute_AAs_count(templateFormula, AAcounts)
-    translationFormula = translationFormula.replace("? h2o[c]",str(2*N-1)+" h2o[c]")
-    translationFormula = translationFormula.replace("? h[c]",str(2*N-1)+" h[c]")
-    translationFormula = translationFormula.replace("? ppi[c]",str(N)+" ppi[c]")
-    translationFormula = translationFormula.replace("? pi[c]",str(2*N-1)+" pi[c]")
-    translationFormula = translationFormula.replace("? gdp[c]",str(2*N-2)+" gdp[c]")
-    translationFormula = translationFormula.replace("? amp[c]",str(N)+" amp[c]")
-    translationFormula = translationFormula.replace("? gtp[c]",str(2*N-2)+" gtp[c]")
-    translationFormula = translationFormula.replace("? atp[c]",str(N+1)+" atp[c]")
-    translationFormula = translationFormula.replace("XXX[c]",str(PSI[0])+"[c]")
+    translationFormula = translationFormula.replace("? h2o_c",str(2*N-1)+" h2o_c")
+    translationFormula = translationFormula.replace("? h_c",str(2*N-1)+" h_c")
+    translationFormula = translationFormula.replace("? ppi_c",str(N)+" ppi_c")
+    translationFormula = translationFormula.replace("? pi_c",str(2*N-1)+" pi_c")
+    translationFormula = translationFormula.replace("? gdp_c",str(2*N-2)+" gdp_c")
+    translationFormula = translationFormula.replace("? amp_c",str(N)+" amp_c")
+    translationFormula = translationFormula.replace("? gtp_c",str(2*N-2)+" gtp_c")
+    translationFormula = translationFormula.replace("? atp_c",str(N+1)+" atp_c")
+    translationFormula = translationFormula.replace("XXX_c",str(PSI[0])+"_c")
     rxns.append(translationFormula)
     rxnNames.append("TRANSLATION_protein")    
 #------------------------------------------------------------------------------ 
@@ -506,7 +506,7 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
             rxns[i] = insert_prot_name_in_rxnFormula(rxns[i],protName)
         for i in range(len(rxnNames)):
             rxnNames[i] = insert_prot_name_in_rxnName(rxnNames[i],protName)
-        rxns.append(protName + '[c] -> ')
+        rxns.append(protName + '_c --> ')
         rxnNames.append(protName + '_Final_demand')
         GPRs.append('')
         return rxns,rxnNames,GPRs
@@ -524,7 +524,7 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
         number_BiP = L/40 #Number of BiPs depends on protein length http://www.cshperspectives.com/content/5/5/a013201.full
         for i in range(len(rxns)):
             rxns[i] = rxns[i].replace("!",str(number_BiP))
-        connector = 'XXX[r]'
+        connector = 'XXX_r'
         
 #------------------------------------------------------------------------------
     #Add Disulphide Bond Reactions
@@ -532,7 +532,7 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
         number_DSB = PSI[2]
         DSBrxns = []
         DSBrxnNames = []
-        DSBrxns.append(connector + ' -> XXX_preDSB[r]')
+        DSBrxns.append(connector + ' --> XXX_preDSB_r')
         DSBrxnNames.append('Start_DSB')
         [DSBrxns, DSBrxnNames] = addPathwayFromCondition('DSB>0',DSBrxns,DSBrxnNames)
         for i in range(len(DSBrxns)):
@@ -542,7 +542,7 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
                 else:
                     DSBrxns[i] = DSBrxns[i].replace('?',number_DSB)
         
-        connector = 'XXX_DSB[r]'
+        connector = 'XXX_DSB_r'
 
         for reaction in DSBrxns:
                 rxns.append(reaction)
@@ -551,14 +551,14 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
 #------------------------------------------------------------------------------              
     #Add GPI reactions
     if PSI[3] == '1':
-        rxns.append(connector + ' -> XXX_preGPI[r]')
+        rxns.append(connector + ' --> XXX_preGPI_r')
         rxnNames.append('Start_GPI')
         [rxns,rxnNames] = addPathwayFromCondition('GPI=1',rxns,rxnNames)
-        connector = 'XXX-dgpi_cho[r]'
+        connector = 'XXX-dgpi_cho_r'
 #------------------------------------------------------------------------------    
     #Add N-glycosylation reactions
     if PSI[4] != '0': #Has N-glycans?
-        rxns.append(connector + ' -> XXX_preNG[r]')
+        rxns.append(connector + ' --> XXX_preNG_r')
         rxnNames.append('Start_NG')
         number_Nglycans = PSI[4] #Get number of N-Glycans
         NGlyrxns = []
@@ -567,11 +567,11 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
         [NGlyrxns,NGlyrxnNames] = addPathwayFromCondition('NG>0',NGlyrxns,NGlyrxnNames)
         [NGlyrxns,NGlyrxnNames] = addPathway('Golgi processing N',NGlyrxns,NGlyrxnNames)
         for i in range(len(NGlyrxns)): #Change the '?' for the number of N-glycans
-            if NGlyrxns[i] == 'XXX-M5-unfold-UBIQP[c] + ? h2o[c] + RAD23A[c] =>  XXX-unfold-UBIQP-RAD23A[c] + ? acgam[c] + ? man[c]':
+            if NGlyrxns[i] == 'XXX-M5-unfold-UBIQP_c + ? h2o_c + RAD23A_c =>  XXX-unfold-UBIQP-RAD23A_c + ? acgam_c + ? man_c':
                 h2o = str(7*int(number_Nglycans))
                 acgam = str(2*int(number_Nglycans))
                 man = str(5*int(number_Nglycans))
-                NGlyrxns[i] = 'XXX-M5-unfold-UBIQP[c] + ' + h2o +' h2o[c] + RAD23A[c] =>  XXX-unfold-UBIQP[c]-RAD23A[c] + ' + acgam + ' acgam[c] + ' + man +' man[c]'
+                NGlyrxns[i] = 'XXX-M5-unfold-UBIQP_c + ' + h2o +' h2o_c + RAD23A_c =>  XXX-unfold-UBIQP_c-RAD23A_c + ' + acgam + ' acgam_c + ' + man +' man_c'
             if '?' in NGlyrxns[i]:
                     if number_Nglycans == '1':
                         NGlyrxns[i] = NGlyrxns[i].replace('? ', '')
@@ -583,11 +583,11 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
         for reactionName in NGlyrxnNames:
             rxnNames.append(reactionName)
         
-        connector = 'XXX-M8B[r]'
+        connector = 'XXX-M8B_r'
    
 #------------------------------------------------------------------------------
     #Add  COPII reactions
-    if connector == 'XXX-M8B[r]':
+    if connector == 'XXX-M8B_r':
         copii_rxns = []
         copii_names = []
         [copii_rxns, copii_names] =  addPathway('COPII_NG',copii_rxns,copii_names)       
@@ -597,9 +597,9 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
             rxnNames.append(copii_names[i])
         
         #[rxns,rxnNames] = addPathway('COPII_NG',rxns,rxnNames)
-        connector = 'XXX-M3-GN2[g]'
+        connector = 'XXX-M3-GN2_g'
         
-    elif connector == 'XXX-dgpi_cho[r]':
+    elif connector == 'XXX-dgpi_cho_r':
         copii_rxns = []
         copii_names = []
         [copii_rxns, copii_names] =  addPathway('COPII_GPI',copii_rxns,copii_names)       
@@ -609,9 +609,9 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
             rxnNames.append(copii_names[i])
         
         #[rxns,rxnNames] = addPathway('COPII_GPI',rxns,rxnNames)
-        connector = 'XXX-dgpi_cho[g]'
+        connector = 'XXX-dgpi_cho_g'
         
-    elif connector == 'XXX_DSB[r]':
+    elif connector == 'XXX_DSB_r':
         [rxns,rxnNames] = addPathway('COPII_DSB',rxns,rxnNames)
         
         copii_rxns = []
@@ -623,9 +623,9 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
             rxnNames.append(copii_names[i])
         
         #[rxns,rxnNames] = addPathway('COPII-canonical',rxns,rxnNames)
-        connector = 'XXX[g]'
+        connector = 'XXX_g'
     
-    elif connector == 'XXX[r]':
+    elif connector == 'XXX_r':
         [rxns,rxnNames] = addPathway('COPII-normal',rxns,rxnNames)
         
         copii_rxns = []
@@ -637,12 +637,12 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
             rxnNames.append(copii_names[i])        
         
         #[rxns,rxnNames] = addPathway('COPII-canonical',rxns,rxnNames)
-        connector = 'XXX[g]'
+        connector = 'XXX_g'
 
 #------------------------------------------------------------------------------
     #Add O-glycosylation reactions
     if PSI[5] != '0': #Has O-glycans?    
-        rxns.append(connector + ' -> XXX_preOG[g]')
+        rxns.append(connector + ' --> XXX_preOG_g')
         rxnNames.append('Start_OG')
         number_Oglycans = PSI[5] #Get number of O-Glycans
         OGlyrxns = []
@@ -661,13 +661,13 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
         for reactionName in OGlyrxnNames:
             rxnNames.append(reactionName)
         
-        connector = 'XXX-Core2[g]'
+        connector = 'XXX-Core2_g'
         
 #------------------------------------------------------------------------------
     #Stay in Golgi if protein is localized there
     if PSI[7] == '[g]' or PSI[7] == '[gm]':
         location = PSI[7]
-        #rxns.append(connector + ' -> XXX_mature' + location)
+        #rxns.append(connector + ' --> XXX_mature' + location)
         #rxnNames.append('Final_location_' + location)
         if 'SP_degradation' in rxnNames:
             SPaas = count_AAs(sequence[0:22]) #Amino acids in signal peptide assuming length is 22 on average
@@ -684,15 +684,15 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
             rxns[i] = insert_prot_name_in_rxnFormula(rxns[i],PSI[0])
         for i in range(len(rxnNames)):
             rxnNames[i] = insert_prot_name_in_rxnName(rxnNames[i],PSI[0])
-        rxns.append(protName + location + ' -> ')
+        rxns.append(protName + location + ' --> ')
         rxnNames.append(protName + '_Final_demand')
         GPRs.append('')
         [rxns,rxnNames,GPRs] = addCanonicalRxns(rxns,rxnNames,GPRs)  		
         return rxns,rxnNames,GPRs
 #------------------------------------------------------------------------------    
     #Add COPI
-    elif PSI[7] == '[r]' or PSI[7] == '[rm]':
-        rxns.append(connector + ' -> XXX_preCOPI[g]')
+    elif PSI[7] == '_r' or PSI[7] == '[rm]':
+        rxns.append(connector + ' --> XXX_preCOPI_g')
         rxnNames.append('Start_COPI')
         
         copi_rxns = []
@@ -703,21 +703,21 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
             rxns.append(copi_rxns[i])
             rxnNames.append(copi_names[i])
 
-        connector = 'XXX_mature[r]'
+        connector = 'XXX_mature_r'
         location = PSI[7]
-        if location == '[r]':
-            rxns.append(connector + ' -> ')
+        if location == '_r':
+            rxns.append(connector + ' --> ')
             rxnNames.append(protName + '_Final_demand')
         elif location == '[rm]':
-            rxns.append(connector + ' -> XXX_mature' + location)
+            rxns.append(connector + ' --> XXX_mature' + location)
             rxnNames.append('Final_location_' + location)
-            rxns.append('XXX_mature' + location + ' -> ')
+            rxns.append('XXX_mature' + location + ' --> ')
             rxnNames.append(protName + '_Final_demand')
         
 #------------------------------------------------------------------------------
     #Add Clathrin vesicles
     elif PSI[7]=='[x]' or PSI[7]=='[l]' or PSI[7]=='[d]':
-        rxns.append(connector + ' -> XXX-preClathrin[g]')
+        rxns.append(connector + ' --> XXX-preClathrin_g')
         rxnNames.append('Start_Clathrin_vesicle')
         
         clath_rxns = []
@@ -730,16 +730,16 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
         
         connector = 'XXX_mature[cv]'
         location = PSI[7]
-        rxns.append(connector + ' -> XXX_mature' + location)
+        rxns.append(connector + ' --> XXX_mature' + location)
         rxnNames.append('Final_location_' + location)
-        rxns.append('XXX_mature' + location + ' -> ')
+        rxns.append('XXX_mature' + location + ' --> ')
         rxnNames.append(protName + '_Final_demand')
         
 #------------------------------------------------------------------------------
     #Send to corresponding location
     else:
         location = PSI[7]
-        rxns.append(connector + ' -> XXX-preSV[g]')
+        rxns.append(connector + ' --> XXX-preSV_g')
         rxnNames.append('Start_Secretion')
         
         sv_rxns = []
@@ -753,9 +753,9 @@ def generateProteinSpecificRxns_B(PSI_row): # Use for non-CHO proteins
         #[rxns,rxnNames] = addPathway("SV",rxns,rxnNames)
         if location == '':
             location = '[e]'
-        rxns.append('XXX_mature[sv]' + ' -> XXX_mature' + location)
+        rxns.append('XXX_mature[sv]' + ' --> XXX_mature' + location)
         rxnNames.append('Final_location_' + location)
-        rxns.append('XXX_mature' + location + ' -> ')
+        rxns.append('XXX_mature' + location + ' --> ')
         rxnNames.append('Final_demand')
 #------------------------------------------------------------------------------
     #Add coeffcients to SP_degradation and Ubiquitin_degradation reactions (if applicable)

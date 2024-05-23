@@ -16,7 +16,8 @@ system_colors = {
     'Post-translational modifications': (0.1, 0.9, 0.1, 1.0), 
     'Proteostasis': (0.3, 0.3, 0.9, 1.0),
     'Translocation': (0.4, 0.7, 0.9, 1.0),
-    'Vesicle trafficking': (0.7, 0.7, 0.3, 1.0)
+    'Vesicle trafficking': (0.7, 0.7, 0.3, 1.0),
+    'Secreted': (0.9, 0.1, 0.1, 1.0)
 }
 
 localization_colors = {
@@ -45,11 +46,6 @@ localization_colors = {
     'Translation': (0.8, 0.2, 0.8, 1.0),
     'Unknown': (0.0, 0.0, 0.0, 1.0)
 }
-
-gene_dict_path = 'gene_dict.pkl'
-with open(gene_dict_path, 'rb') as file:
-    gene_dict = pickle.load(file)
-
 
 
 def fetch_string_interactions(gene_list):
@@ -83,7 +79,7 @@ def fetch_string_interactions(gene_list):
 
                 # Check if interaction is already seen, considering both directions
                 if interaction_tuple not in seen_interactions and (protein2, protein1) not in seen_interactions:
-                    if protein1 in gene_list and protein2 in gene_list:
+                    if protein1 in gene_list and protein2 in gene_listb:
                         score = interaction['score']
                         # Add nodes and edges to the graph if interaction is new
                         G.add_node(protein1)
@@ -98,7 +94,7 @@ def fetch_string_interactions(gene_list):
     return G
 
 
-def visualize_network(G, gene_list=None, node_size=0.010, filename=None,dist=0.15, itrs=80, color_by='systems', legends=True):
+def visualize_network(G, gene_list=None, node_size=0.010, filename=None,dist=0.15, itrs=80, color_by='systems', gene_dict=dict, legends=True):
     """
     Visualize a protein-protein interaction network using matplotlib.
     
