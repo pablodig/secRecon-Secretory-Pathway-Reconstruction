@@ -1,32 +1,32 @@
 class iCHOSEC_Builder:
-    def __init__(self, entryID, PSIM, rxnPathway, rxnFormula, rxnAbbreviation, rxnConditions, rxnGPR):
+    def __init__(self, entryID, PSIM, rxnPathway, rxnFormula, rxnAbbreviation, rxnConditions, rxnGPR, rxnComponents):
         """
         Initialize the iCHOSEC_Builder class with the provided parameters.
 
         Parameters:
-        PSIM (DataFrame): Protein Synthesis Information matrix.
         entryID (int or str): The ID of the protein entry.
+        PSIM (DataFrame): Protein Synthesis Information matrix.
         rxnPathway (str): The reaction pathway.
         rxnFormula (str): The reaction formula.
         rxnAbbreviation (str): The reaction abbreviation.
         rxnConditions (str): The reaction conditions.
         rxnGPR (str): The gene-protein-reaction association.
         """
-
-
         self.entryID = entryID
+        self._validate_input(PSIM, entryID)
+
         self.PSI = PSIM.loc[entryID]
         self.protName = self.PSI.iloc[0]
         self.sequence = self.PSI.iloc[10]
         self.L = float(self.PSI.iloc[1]) # Protein Length
         self.MW = float(self.PSI.iloc[2])  # Molecular weight
-        self.SP = self.PSI.iloc[3]  # Signal Peptide
-        self.DSB = self.PSI.iloc[4]  # Disulphide Bond
-        self.GPI = self.PSI.iloc[5]  # GPI
-        self.NG = self.PSI.iloc[6]  # N-glycosylation
-        self.OG = self.PSI.iloc[7]  # O-glycosylation
-        self.TMD = self.PSI.iloc[8]  # TMD
-        self.subloc = self.PSI.iloc[9]  # Subcellular Localization
+        self.SP = str(self.PSI.iloc[3])  # Signal Peptide
+        self.DSB = str(self.PSI.iloc[4])  # Disulphide Bond
+        self.GPI = str(self.PSI.iloc[5])  # GPI
+        self.NG = str(self.PSI.iloc[6])  # N-glycosylation
+        self.OG = str(self.PSI.iloc[7])  # O-glycosylation
+        self.TMD = str(self.PSI.iloc[8])  # Transmembrane Domains
+        self.subloc = str(self.PSI.iloc[9])  # Subcellular Localization
         self.rxns = []
         self.rxnNames = []
         self.GPRs = []
@@ -38,12 +38,37 @@ class iCHOSEC_Builder:
         self.rxnAbbreviation = rxnAbbreviation
         self.rxnConditions = rxnConditions
         self.rxnGPR = rxnGPR
+        self.rxnComponents = rxnComponents
 
         print(f'''
             Protein: {self.protName}
             Length: {self.L}
             MW: {self.MW}
+            Signal Peptide: {self.SP}
+            Disulfide Bonds: {self.DSB}
             ''')
+
+    def _validate_input(self, PSIM, entryID):
+        """
+        Validate the input parameters.
+
+        Parameters:
+        PSIM (DataFrame): Protein Synthesis Information matrix.
+        entryID (int or str): The ID of the protein entry.
+
+        Raises:
+        ValueError: If PSIM does not contain the entryID or required columns.
+        """
+        if entryID not in PSIM.index:
+            raise ValueError(f"entryID {entryID} not found in PSIM")
+
+        required_columns = [
+            'Protein names', 'Length', 'Mass', 'SP', 'DSB', 'GPI', 
+            'NG', 'OG', 'TMD', 'Location', 'Sequence'
+        ]
+        for column in required_columns:
+            if column not in PSIM.columns:
+                raise ValueError(f"PSIM is missing required column: {column}")
 
     def count_AAs(self, sequence):
         """
@@ -136,7 +161,7 @@ class iCHOSEC_Builder:
         newAbbreviation = str(entryID) + "_" + rxnAbbrev
         return newAbbreviation
 
-    def addPathway(self, pathwayName, listOfRxns, listOfRxnsNames):
+    def addPathway(self, pathwayName, listOfRxns, listOfRxnsNames, listOfComponents):
         """
         Add reactions and reaction names for a given pathway.
 
@@ -154,6 +179,13 @@ class iCHOSEC_Builder:
             if self.rxnPathway[i] == pathwayName:
                 newList.append(self.rxnFormula[i])
                 newList2.append(self.rxnAbbreviation[i])
+                # Add Sink reactions for the components of each reaction added
+                if listOfComponents[i].split(", ") != ['']:
+                    for component in listOfComponents[i].split(", "):
+                        newList.append(component + ' <=>')
+                        newList2.append('SK_' + component)
+                        print(newList, newList2)
+
         return newList, newList2
 
     def getGPRsFromRxnNames(self, listOfRxnsNames):
@@ -193,12 +225,12 @@ class iCHOSEC_Builder:
         newListGPRs = listOfGPRs
 
         # Add canonical reactions
-        newListRxns, newListNames = self.addPathway("Canonical", listOfRxns, listOfRxnNames)
+        newListRxns, newListNames = self.addPathway("Canonical", listOfRxns, listOfRxnNames, self.rxnComponents)
 
         # Add canonical GPRs
         r = []
         n = []
-        r, n = self.addPathway("Canonical", r, n)
+        r, n = self.addPathway("Canonical", r, n, self.rxnComponents)
         newGPRs = self.getGPRsFromRxnNames(n)
         for gpr in newGPRs:
             newListGPRs.append(gpr)
@@ -226,14 +258,9 @@ class iCHOSEC_Builder:
         return newList, newList2
 
 
-    def generateProteinSpecificRxns_A(self, entryID):
+    def generateProteinSpecificRxns_A(self):
         """
-        Generate protein-specific reactions list given a UniProt ID.
-
-        Parameters:
-        entryID (str): The UniProt ID of the protein.
-        PSIM (list): List of protein synthesis information.
-        PSIM_entries (list): List of UniProt IDs corresponding to PSIM.
+        Generate protein-specific reactions list based on the entry ID already defined in the class.
 
         Returns:
         tuple: Lists of reactions, reaction names, and GPRs.
@@ -245,8 +272,8 @@ class iCHOSEC_Builder:
         copi_coeff = int(round(143793.19 * Kv / V))
         copii_coeff = int(round(268082.35 * Kv / V))
         self.connector = ''
+
         # Prepare vectors that will store reactions and components
-        self.protName = str(entryID)
         self.rxns = []
         self.rxnNames = []
 
@@ -260,11 +287,11 @@ class iCHOSEC_Builder:
             self.GPRs = self.getGPRsFromRxnNames(self.rxnNames)
             # Change the reaction names and their formulas to include the UniProt Identifier
             for i in range(len(self.rxns)):
-                self.rxns[i] = self.insert_prot_name_in_rxnFormula(self.rxns[i], self.protName)
+                self.rxns[i] = self.insert_prot_name_in_rxnFormula(self.rxns[i], self.entryID)
             for i in range(len(self.rxnNames)):
-                self.rxnNames[i] = self.insert_prot_name_in_rxnName(self.rxnNames[i], self.protName)
-            self.rxns.append(self.protName + '_c --> ')
-            self.rxnNames.append(self.protName + '_Final_demand')
+                self.rxnNames[i] = self.insert_prot_name_in_rxnName(self.rxnNames[i], self.entryID)
+            self.rxns.append(self.entryID + '_c --> ')
+            self.rxnNames.append(self.entryID + '_Final_demand')
             self.GPRs.append('')
             return self.rxns, self.rxnNames, self.GPRs
 
@@ -276,7 +303,7 @@ class iCHOSEC_Builder:
                 if self.subloc == '[pm]' or self.TMD != '0':
                     self.rxns, self.rxnNames = self.addPathway("Post-translational Translocation (Tail anchored membrane protein)", self.rxns, self.rxnNames)
             else:
-                self.rxns, self.rxnNames = self.addPathway("Translocation", self.rxns, self.rxnNames)
+                self.rxns, self.rxnNames = self.addPathway("Translocation", self.rxns, self.rxnNames, self.rxnComponents)
 
             number_BiP = self.L / 40  # Number of BiPs depends on protein length
             for i in range(len(self.rxns)):
@@ -354,12 +381,12 @@ class iCHOSEC_Builder:
             self.connector = 'XXX-M3-GN2[g]'
 
             # Add if protein is EPO (Human)
-            if self.protName == 'P01588':
+            if self.entryID == 'P01588':
                 self.rxns.append('P01588_c --> EPO_Human_c')
                 self.rxnNames.append('make_EPO')
                 self.rxns, self.rxnNames = self.addPathway('Golgi processing (EPO specific)', self.rxns, self.rxnNames)
                 self.connector = 'XXX-M3-GN4-GL4-NA4-F[g]'
-                self.protName = 'EPO_Human'
+                self.entryID = 'EPO_Human'
 
         elif self.connector == 'XXX-dgpi_cho_r':
             copii_rxns = []
@@ -373,11 +400,11 @@ class iCHOSEC_Builder:
             self.connector = 'XXX-dgpi_cho[g]'
 
         elif self.connector == 'XXX_DSB_r':
-            self.rxns, self.rxnNames = self.addPathway('COPII_DSB', self.rxns, self.rxnNames)
+            self.rxns, self.rxnNames = self.addPathway('COPII_DSB', self.rxns, self.rxnNames, self.rxnComponents)
 
             copii_rxns = []
             copii_names = []
-            copii_rxns, copii_names = self.addPathway('COPII-canonical', copii_rxns, copii_names)
+            copii_rxns, copii_names = self.addPathway('COPII-canonical', copii_rxns, copii_names, self.rxnComponents)
             for i in range(len(copii_rxns)):
                 copii_rxns[i] = copii_rxns[i].replace("!", str(copii_coeff))
                 self.rxns.append(copii_rxns[i])
@@ -400,7 +427,7 @@ class iCHOSEC_Builder:
 
         # Add O-glycosylation reactions
         if self.OG != '0':  # Has O-glycans?
-            self.rxns.append(self.connector + ' --> XXX_preOG[g]')
+            self.rxns.append(self.connector + ' --> XXX_preOG_g')
             self.rxnNames.append('Start_OG')
             number_Oglycans = str(self.OG)  # Get number of O-Glycans
             OGlyrxns = []
@@ -436,18 +463,18 @@ class iCHOSEC_Builder:
             self.GPRs = self.getGPRsFromRxnNames(self.rxnNames)
             # Change the reaction names and their formulas to include the UniProt Identifier
             for i in range(len(self.rxns)):
-                self.rxns[i] = self.insert_prot_name_in_rxnFormula(self.rxns[i], self.protName)
+                self.rxns[i] = self.insert_prot_name_in_rxnFormula(self.rxns[i], self.entryID)
             for i in range(len(self.rxnNames)):
-                self.rxnNames[i] = self.insert_prot_name_in_rxnName(self.rxnNames[i], self.protName)
-            self.rxns.append(self.protName + self.location + ' --> ')
-            self.rxnNames.append(self.protName + '_Final_demand')
+                self.rxnNames[i] = self.insert_prot_name_in_rxnName(self.rxnNames[i], self.entryID)
+            self.rxns.append(self.entryID + self.location + ' --> ')
+            self.rxnNames.append(self.entryID + '_Final_demand')
             self.GPRs.append('')
             self.rxns, self.rxnNames, self.GPRs = self.addCanonicalRxns(self.rxns, self.rxnNames, self.GPRs)
             return self.rxns, self.rxnNames, self.GPRs
 
         # Add COPI
         elif self.subloc == '[r]' or self.subloc == '[rm]':
-            self.rxns.append(self.connector + ' --> XXX_preCOPI[g]')
+            self.rxns.append(self.connector + ' --> XXX_preCOPI_g')
             self.rxnNames.append('Start_COPI')
 
             copi_rxns = []
@@ -462,16 +489,16 @@ class iCHOSEC_Builder:
             self.location = self.subloc
             if self.location == '[r]':
                 self.rxns.append(self.connector + ' --> ')
-                self.rxnNames.append(self.protName + '_Final_demand')
+                self.rxnNames.append(self.entryID + '_Final_demand')
             elif self.location == '[rm]':
                 self.rxns.append(self.connector + ' --> XXX_mature' + self.location)
                 self.rxnNames.append('Final_location_' + self.location)
                 self.rxns.append('XXX_mature' + self.location + ' --> ')
-                self.rxnNames.append(self.protName + '_Final_demand')
+                self.rxnNames.append(self.entryID + '_Final_demand')
 
         # Add Clathrin vesicles
         elif self.subloc == '[x]' or self.subloc == '[l]' or self.subloc == '[d]':
-            self.rxns.append(self.connector + ' --> XXX-preClathrin[g]')
+            self.rxns.append(self.connector + ' --> XXX-preClathrin_g')
             self.rxnNames.append('Start_Clathrin_vesicle')
 
             clath_rxns = []
@@ -487,17 +514,17 @@ class iCHOSEC_Builder:
             self.rxns.append(self.connector + ' --> XXX_mature' + self.location)
             self.rxnNames.append('Final_location_' + self.location)
             self.rxns.append('XXX_mature' + self.location + ' --> ')
-            self.rxnNames.append(self.protName + '_Final_demand')
+            self.rxnNames.append(self.entryID + '_Final_demand')
 
         # Send to corresponding location
         else:
             self.location = self.subloc
-            self.rxns.append(self.connector + ' --> XXX-preSV[g]')
+            self.rxns.append(self.connector + ' --> XXX-preSV_g')
             self.rxnNames.append('Start_Secretion')
 
             sv_rxns = []
             sv_names = []
-            sv_rxns, sv_names = self.addPathway('SV', sv_rxns, sv_names)
+            sv_rxns, sv_names = self.addPathway('SV', sv_rxns, sv_names, self.rxnComponents)
             for i in range(len(sv_rxns)):
                 sv_rxns[i] = sv_rxns[i].replace("!", str(self.clathrin_coeff))
                 self.rxns.append(sv_rxns[i])
@@ -524,9 +551,9 @@ class iCHOSEC_Builder:
 
         # Change the reaction names and their formulas to include the UniProt Identifier
         for i in range(len(self.rxns)):
-            self.rxns[i] = self.insert_prot_name_in_rxnFormula(self.rxns[i], self.protName)
+            self.rxns[i] = self.insert_prot_name_in_rxnFormula(self.rxns[i], self.entryID)
         for i in range(len(self.rxnNames)):
-            self.rxnNames[i] = self.insert_prot_name_in_rxnName(self.rxnNames[i], self.protName)
+            self.rxnNames[i] = self.insert_prot_name_in_rxnName(self.rxnNames[i], self.entryID)
         self.rxns, self.rxnNames, self.GPRs = self.addCanonicalRxns(self.rxns, self.rxnNames, self.GPRs)
         return self.rxns, self.rxnNames, self.GPRs
 
