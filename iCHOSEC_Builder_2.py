@@ -184,7 +184,6 @@ class iCHOSEC_Builder:
                     for component in listOfComponents[i].split(", "):
                         newList.append(component + ' <=>')
                         newList2.append('SK_' + component)
-                        print(newList, newList2)
 
         return newList, newList2
 
