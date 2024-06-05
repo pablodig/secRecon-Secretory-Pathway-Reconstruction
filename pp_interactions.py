@@ -48,24 +48,28 @@ localization_colors = {
 }
 
 
-def fetch_string_interactions(gene_list):
+def fetch_string_interactions(main_genes, extra_genes=[]):
     """
     Fetch protein-protein interactions from STRING database for a list of genes.
     
     Parameters:
-    - gene_list (list): List of gene names to fetch interactions for.
+    - main_genes (list): List of gene names to fetch interactions for.
+    - extra_genes (list): Additional genes to consider in interactions.
     
     Returns:
     - G (networkx.Graph): A graph where nodes are proteins and edges represent interactions.
     """
     # Initialize an empty graph
     G = nx.Graph()
+
+    # Combine main_genes and extra_genes for convenience
+    all_genes = set(main_genes + extra_genes)
     
     # Initialize set to track seen interactions
     seen_interactions = set() 
     
     # Fetch interactions for each gene in the list
-    for gene in tqdm(gene_list, desc="Fetching Interactions"):
+    for gene in tqdm(main_genes, desc="Fetching Interactions"):
         url = f"https://string-db.org/api/json/network?identifiers={gene}"
         response = requests.get(url)
         
@@ -79,7 +83,7 @@ def fetch_string_interactions(gene_list):
 
                 # Check if interaction is already seen, considering both directions
                 if interaction_tuple not in seen_interactions and (protein2, protein1) not in seen_interactions:
-                    if protein1 in gene_list and protein2 in gene_listb:
+                    if protein1 in all_genes and protein2 in all_genes:
                         score = interaction['score']
                         # Add nodes and edges to the graph if interaction is new
                         G.add_node(protein1)
@@ -94,13 +98,13 @@ def fetch_string_interactions(gene_list):
     return G
 
 
-def visualize_network(G, gene_list=None, node_size=0.010, filename=None,dist=0.15, itrs=80, color_by='systems', gene_dict=dict, legends=True):
+def visualize_network(G, main_genes=None, node_size=0.010, filename=None,dist=0.15, itrs=80, color_by='systems', gene_dict=dict, legends=True):
     """
     Visualize a protein-protein interaction network using matplotlib.
     
     Parameters:
     - G (networkx.Graph): The graph to visualize.
-    - gene_list (list, optional): List of gene names for the title.
+    - main_genes (list, optional): List of gene names for the title.
     - node_size (int, optional): Size of the nodes.
     - labels_size (int, optional): Font size for labels.
     - filename (str, optional): If provided, save the plot to this filename.
