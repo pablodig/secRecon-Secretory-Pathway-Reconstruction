@@ -1,11 +1,16 @@
+
+import numpy as np
+import pandas as pd
+
 class iCHOSEC_Builder:
-    def __init__(self, entryID, PSIM, rxnPathway, rxnFormula, rxnAbbreviation, rxnConditions, rxnGPR, rxnComponents):
+    def __init__(self, entryID, rxnPathway, rxnFormula, rxnAbbreviation, rxnConditions, rxnGPR, rxnComponents, PSIM=None, PSIV=None):
         """
         Initialize the iCHOSEC_Builder class with the provided parameters.
 
         Parameters:
         entryID (int or str): The ID of the protein entry.
-        PSIM (DataFrame): Protein Synthesis Information matrix.
+        PSIM (DataFrame): Protein Specific Information matrix.
+        PSIV (list): Protein Specific Information vector.
         rxnPathway (str): The reaction pathway.
         rxnFormula (str): The reaction formula.
         rxnAbbreviation (str): The reaction abbreviation.
@@ -13,11 +18,20 @@ class iCHOSEC_Builder:
         rxnGPR (str): The gene-protein-reaction association.
         """
         self.entryID = entryID
-        self._validate_input(PSIM, entryID)
 
-        self.PSI = PSIM.loc[entryID]
-        self.protName = self.PSI.iloc[0]
-        self.sequence = self.PSI.iloc[10]
+        if PSIM is not None and not PSIM.empty and PSIV is None:
+            self._validate_input_PSIM(PSIM, entryID)
+            self.PSI = PSIM.loc[entryID]
+        elif PSIM is None and PSIV is not None:
+            if isinstance(PSIV, list) or isinstance(PSIV, np.ndarray):
+                PSIV = pd.Series(PSIV, index=['Protein names', 'Length', 'Mass', 'SP', 'DSB', 'GPI', 'NG', 'OG', 'TMD', 'Location', 'Sequence'])
+            self._validate_input_PSIV(PSIV)
+            self.PSI = PSIV
+        else:
+            raise ValueError("Either PSIM (non-empty DataFrame) or PSIV (list of length 9) must be provided, but not both.")
+
+        self.protName = self.PSI.iloc[0] # Protein Name
+        self.sequence = self.PSI.iloc[10] # A.A. secuence
         self.L = float(self.PSI.iloc[1]) # Protein Length
         self.MW = float(self.PSI.iloc[2])  # Molecular weight
         self.SP = str(self.PSI.iloc[3])  # Signal Peptide
@@ -48,7 +62,7 @@ class iCHOSEC_Builder:
             Disulfide Bonds: {self.DSB}
             ''')
 
-    def _validate_input(self, PSIM, entryID):
+    def _validate_input_PSIM(self, PSIM, entryID):
         """
         Validate the input parameters.
 
@@ -69,6 +83,21 @@ class iCHOSEC_Builder:
         for column in required_columns:
             if column not in PSIM.columns:
                 raise ValueError(f"PSIM is missing required column: {column}")
+
+    def _validate_input_PSIV(self, PSIV):
+        """
+        Validate the input parameters for PSIV.
+
+        Parameters:
+        PSIV (Series): Protein Synthesis Information vector.
+
+        Raises:
+        ValueError: If PSIV does not contain the required number of elements.
+        """
+        required_columns = ['Protein names', 'Length', 'Mass', 'SP', 'DSB', 'GPI', 'NG', 'OG', 'TMD', 'Location', 'Sequence']
+        for column in required_columns:
+            if column not in PSIV.index:
+                raise ValueError(f"PSIV is missing required column: {column}")
 
     def count_AAs(self, sequence):
         """
@@ -182,11 +211,12 @@ class iCHOSEC_Builder:
             if self.rxnPathway[i] == pathwayName:
                 newList.append(self.rxnFormula[i])
                 newList2.append(self.rxnAbbreviation[i])
+
                 # Add Sink reactions for the components of each reaction added
-                if listOfComponents[i].split(",") != ['']:
-                    for component in listOfComponents[i].split(","):
-                        newList.append(component + ' <=>')
-                        newList2.append('SK_' + component)
+                #if listOfComponents[i].split(",") != ['']:
+                #    for component in listOfComponents[i].split(","):
+                #        newList.append(component + ' <=>')
+                #        newList2.append('SK_' + component)
 
         return newList, newList2
 
@@ -380,14 +410,14 @@ class iCHOSEC_Builder:
                 self.rxns.append(copii_rxns[i])
                 self.rxnNames.append(copii_names[i])
 
-            self.connector = 'XXX-M3-GN2[g]'
+            self.connector = 'XXX-M3-GN2_g'
 
             # Add if protein is EPO (Human)
             if self.entryID == 'P01588':
                 self.rxns.append('P01588_c --> EPO_Human_c')
                 self.rxnNames.append('make_EPO')
                 self.rxns, self.rxnNames = self.addPathway('Golgi processing (EPO specific)', self.rxns, self.rxnNames)
-                self.connector = 'XXX-M3-GN4-GL4-NA4-F[g]'
+                self.connector = 'XXX-M3-GN4-GL4-NA4-F_g'
                 self.entryID = 'EPO_Human'
 
         elif self.connector == 'XXX-dgpi_cho_r':
@@ -399,7 +429,7 @@ class iCHOSEC_Builder:
                 self.rxns.append(copii_rxns[i])
                 self.rxnNames.append(copii_names[i])
 
-            self.connector = 'XXX-dgpi_cho[g]'
+            self.connector = 'XXX-dgpi_cho_g'
 
         elif self.connector == 'XXX_DSB_r':
             self.rxns, self.rxnNames = self.addPathway('COPII_DSB', self.rxns, self.rxnNames, self.rxnComponents)
@@ -412,7 +442,7 @@ class iCHOSEC_Builder:
                 self.rxns.append(copii_rxns[i])
                 self.rxnNames.append(copii_names[i])
 
-            self.connector = 'XXX[g]'
+            self.connector = 'XXX_g'
 
         elif self.connector == 'XXX_r':
             self.rxns, self.rxnNames = self.addPathway('COPII-normal', self.rxns, self.rxnNames)
@@ -425,7 +455,7 @@ class iCHOSEC_Builder:
                 self.rxns.append(copii_rxns[i])
                 self.rxnNames.append(copii_names[i])
 
-            self.connector = 'XXX[g]'
+            self.connector = 'XXX_g'
 
         # Add O-glycosylation reactions
         if self.OG != '0':  # Has O-glycans?
