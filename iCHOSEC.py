@@ -193,7 +193,7 @@ class iCHOSEC_Builder:
             processed_reaction = str(entryID) + "_" + rxnAbbrev
         return processed_reaction
 
-    def addPathway(self, pathwayName, listOfRxns, listOfRxnsNames, listOfComponents):
+    def addPathway(self, pathwayName, listOfRxns, listOfRxnsNames):
         """
         Add reactions and reaction names for a given pathway.
 
@@ -257,12 +257,12 @@ class iCHOSEC_Builder:
         newListGPRs = listOfGPRs
 
         # Add canonical reactions
-        newListRxns, newListNames = self.addPathway("Canonical", listOfRxns, listOfRxnNames, self.rxnComponents)
+        newListRxns, newListNames = self.addPathway("Canonical", listOfRxns, listOfRxnNames)
 
         # Add canonical GPRs
         r = []
         n = []
-        r, n = self.addPathway("Canonical", r, n, self.rxnComponents)
+        r, n = self.addPathway("Canonical", r, n)
         newGPRs = self.getGPRsFromRxnNames(n)
         for gpr in newGPRs:
             newListGPRs.append(gpr)
@@ -290,7 +290,7 @@ class iCHOSEC_Builder:
         return newList, newList2
 
 
-    def generateProteinSpecificRxns_A(self):
+    def generateProteinSpecificRxns_A(self, final_demand='recycling'):
         """
         Generate protein-specific reactions list based on the entry ID already defined in the class.
 
@@ -335,7 +335,7 @@ class iCHOSEC_Builder:
                 if self.subloc == '[pm]' or self.TMD != '0':
                     self.rxns, self.rxnNames = self.addPathway("Post-translational Translocation (Tail anchored membrane protein)", self.rxns, self.rxnNames)
             else:
-                self.rxns, self.rxnNames = self.addPathway("Translocation", self.rxns, self.rxnNames, self.rxnComponents)
+                self.rxns, self.rxnNames = self.addPathway("Translocation", self.rxns, self.rxnNames)
 
             number_BiP = self.L / 40  # Number of BiPs depends on protein length
             for i in range(len(self.rxns)):
@@ -432,11 +432,11 @@ class iCHOSEC_Builder:
             self.connector = 'XXX-dgpi_cho_g'
 
         elif self.connector == 'XXX_DSB_r':
-            self.rxns, self.rxnNames = self.addPathway('COPII_DSB', self.rxns, self.rxnNames, self.rxnComponents)
+            self.rxns, self.rxnNames = self.addPathway('COPII_DSB', self.rxns, self.rxnNames)
 
             copii_rxns = []
             copii_names = []
-            copii_rxns, copii_names = self.addPathway('COPII-canonical', copii_rxns, copii_names, self.rxnComponents)
+            copii_rxns, copii_names = self.addPathway('COPII-canonical', copii_rxns, copii_names)
             for i in range(len(copii_rxns)):
                 copii_rxns[i] = copii_rxns[i].replace("!", str(copii_coeff))
                 self.rxns.append(copii_rxns[i])
@@ -550,24 +550,48 @@ class iCHOSEC_Builder:
 
         # Send to corresponding location
         else:
-            self.location = self.subloc
+            if self.subloc == '[pm]':
+                self.location = '_pm'
+            if self.subloc == '[e]':
+                self.location = '_e'
+            if self.subloc == '':
+                self.location = '_e'
             self.rxns.append(self.connector + ' --> XXX-preSV_g')
             self.rxnNames.append('Start_Secretion')
 
             sv_rxns = []
             sv_names = []
-            sv_rxns, sv_names = self.addPathway('SV', sv_rxns, sv_names, self.rxnComponents)
+            sv_rxns, sv_names = self.addPathway('SV', sv_rxns, sv_names)
             for i in range(len(sv_rxns)):
                 sv_rxns[i] = sv_rxns[i].replace("!", str(self.clathrin_coeff))
                 self.rxns.append(sv_rxns[i])
                 self.rxnNames.append(sv_names[i])
 
-            if self.location == '':
-                self.location = '_e'
             self.rxns.append('XXX_mature_sv' + ' --> XXX_mature' + self.location)
             self.rxnNames.append('Final_location_' + self.location)
-            self.rxns.append('XXX_mature' + self.location + ' --> ')
-            self.rxnNames.append('Final_demand')
+            
+            if final_demand == 'production': # The objective is to produce the protein
+                self.rxns.append('XXX_mature' + self.location + ' --> ')
+                self.rxnNames.append('Final_demand')
+
+            elif final_demand == 'recycling': # Calculation of the metabolic cost of recycling a protein
+
+                self.connector = 'XXX_mature' + self.location
+                self.rxns.append(self.connector + ' --> XXX-preLD_c')
+                self.rxnNames.append('Start_Lysomal_Degradation')    
+                
+                # Add Lysomal Degradation Reactions
+                lysosomal_rxns = []
+                lysosomal_names = []
+                lysosomal_rxns, lysosomal_names = self.addPathway('Lysosomal Degradation', lysosomal_rxns, lysosomal_names)
+                for i in range(len(lysosomal_rxns)):
+                    self.rxns.append(lysosomal_rxns[i])
+                    self.rxnNames.append(lysosomal_names[i])
+
+                new_aas = self.count_AAs(self.sequence[22:])
+                self.rxns[self.rxnNames.index('LYSO_DEGRADATION')] = self.rxns[self.rxnNames.index('LYSO_DEGRADATION')].replace("!", "?")
+                self.rxns[self.rxnNames.index('LYSO_DEGRADATION')] = self.substitute_AAs_count(self.rxns[self.rxnNames.index('LYSO_DEGRADATION')], new_aas)
+                self.rxns[self.rxnNames.index('LYSO_DEGRADATION')] = self.rxns[self.rxnNames.index('LYSO_DEGRADATION')].replace("?", str(self.L-22))
 
         # Add coefficients to SP_degradation and Ubiquitin_degradation reactions (if applicable)
         if 'SP_degradation' in self.rxnNames:
