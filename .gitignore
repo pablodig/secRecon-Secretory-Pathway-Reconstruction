@@ -155,3 +155,4 @@ cython_debug/
 #.idea/
 *.DS_Store
 Input/preppi_interactome/preppi.human_af.interactome.txt
+Data/preppi_interactome/preppi.human_af.interactome.txt
