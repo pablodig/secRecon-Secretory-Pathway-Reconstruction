@@ -98,30 +98,31 @@ def fetch_string_interactions(main_genes, extra_genes=[]):
     return G
 
 
-def visualize_network(G, main_genes=None, node_size=0.010, filename=None,dist=0.15, itrs=80, color_by='systems', gene_dict=dict, legends=True):
+def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_by='systems', legends=True, label_threshold=None):
     """
     Visualize a protein-protein interaction network using matplotlib.
-    
+
     Parameters:
     - G (networkx.Graph): The graph to visualize.
-    - main_genes (list, optional): List of gene names for the title.
-    - node_size (int, optional): Size of the nodes.
-    - labels_size (int, optional): Font size for labels.
+    - pos (dict): Positions of nodes.
+    - gene_dict (dict): Dictionary containing gene information.
+    - node_size (float, optional): Size of the nodes.
     - filename (str, optional): If provided, save the plot to this filename.
+    - color_by (str, optional): Attribute to color nodes by ('systems' or 'localization').
+    - legends (bool, optional): Whether to display legends.
+    - label_threshold (float, optional): Threshold for displaying labels on nodes based on gene expression data.
     """
     # Create a figure and axes
     fig, ax = plt.subplots(figsize=(40, 40))
-    
-    # Draw the network
-    pos = nx.spring_layout(G, seed=42, k=dist, iterations=itrs)
-    
+
     # Scale edge widths
     edge_weights = [G[u][v]['weight'] for u, v in G.edges()]
     min_width = 0.1
     max_width = 4.0
     epsilon = 1e-10
-    edge_weights = [min_width + (w - min(edge_weights)) * (max_width - min_width) / (max(edge_weights) - min(edge_weights) + epsilon) for w in edge_weights]
-    
+    if edge_weights:
+        edge_weights = [min_width + (w - min(edge_weights)) * (max_width - min_width) / (max(edge_weights) - min(edge_weights) + epsilon) for w in edge_weights]
+
     # Draw edges with scaled widths
     nx.draw_networkx_edges(G, pos, width=edge_weights, edge_color='lightgray', ax=ax)
 
@@ -130,19 +131,35 @@ def visualize_network(G, main_genes=None, node_size=0.010, filename=None,dist=0.
         for node, (x, y) in pos.items():
             systems = gene_dict[node]['systems']
             colors = [system_colors[sys] for sys in systems]
-            ax.pie([1]*len(systems), colors=colors, radius=node_size, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
+
+            if node_size == 'exp':
+                radius = gene_dict[node]['Expression']
+                ax.pie([1]*len(systems), colors=colors, radius=radius, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
+                # Add label if expression exceeds the threshold
+                if label_threshold and radius > label_threshold:
+                    ax.text(x, y, node, fontsize=24, ha='left', va='bottom')
+            else:
+                ax.pie([1]*len(systems), colors=colors, radius=node_size, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
 
     elif color_by == 'localization':
         for node, (x, y) in pos.items():
             localizations = gene_dict[node]['subcellular_localization']
             colors = [localization_colors[loc] for loc in localizations]
-            ax.pie([1]*len(localizations), colors=colors, radius=0.012, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
-    
+
+            if node_size == 'exp':
+                radius = gene_dict[node]['Expression']
+                ax.pie([1]*len(localizations), colors=colors, radius=radius, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
+                # Add label if expression exceeds the threshold
+                if label_threshold and radius > label_threshold:
+                    ax.text(x, y, node, fontsize=24, ha='left', va='bottom')
+            else:
+                ax.pie([1]*len(localizations), colors=colors, radius=0.012, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
+
     # Get the current axis limits
     x_values, y_values = zip(*pos.values())
     min_x, max_x = min(x_values), max(x_values)
     min_y, max_y = min(y_values), max(y_values)
-    
+
     # Set new axis limits
     ax.set_xlim(min_x - 0.1, max_x + 0.1)
     ax.set_ylim(min_y - 0.1, max_y + 0.1)
@@ -157,8 +174,8 @@ def visualize_network(G, main_genes=None, node_size=0.010, filename=None,dist=0.
             legend_patches = [mpatches.Patch(color=color, label=category) for category, color in localization_colors.items()]
             plt.legend(handles=legend_patches, prop={'size': 20}, loc='lower left', bbox_to_anchor=(0.9, 0.6))
             plt.subplots_adjust(right=0.75)
-    
+
     if filename:
         plt.savefig(filename, dpi=300, bbox_inches='tight')
-         
+
     plt.show()
