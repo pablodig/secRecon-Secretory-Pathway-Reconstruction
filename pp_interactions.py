@@ -47,6 +47,23 @@ localization_colors = {
     'Unknown': (0.0, 0.0, 0.0, 1.0)
 }
 
+def get_radius(value, categories):
+    """
+    Determine the radius of the node based on the normalized_log value.
+    
+    Parameters:
+    value (float): The normalized_log value of the node.
+    
+    Returns:
+    float: The radius corresponding to the given value based on predefined categories.
+    """
+    # Iterate over the categories to find the appropriate radius for the given value
+    for (low, high), radius in categories.items():
+        if low <= value < high:
+            return radius
+    
+    # Return a default small value if the value does not fit into any category
+    return 0.001
 
 def fetch_string_interactions(main_genes, extra_genes=[]):
     """
@@ -98,7 +115,7 @@ def fetch_string_interactions(main_genes, extra_genes=[]):
     return G
 
 
-def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_by='systems', legends=True, label_threshold=None):
+def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_by='systems', legends=True, categories=None):
     """
     Visualize a protein-protein interaction network using matplotlib.
 
@@ -110,7 +127,6 @@ def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_b
     - filename (str, optional): If provided, save the plot to this filename.
     - color_by (str, optional): Attribute to color nodes by ('systems' or 'localization').
     - legends (bool, optional): Whether to display legends.
-    - label_threshold (float, optional): Threshold for displaying labels on nodes based on gene expression data.
     """
     # Create a figure and axes
     fig, ax = plt.subplots(figsize=(40, 40))
@@ -133,11 +149,10 @@ def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_b
             colors = [system_colors[sys] for sys in systems]
 
             if node_size == 'exp':
-                radius = gene_dict[node]['Expression']
+                # Draw pie chart at node position with edgecolor and linewidth
+                raw_radius = gene_dict[node]['Expression']
+                radius = get_radius(raw_radius, categories)
                 ax.pie([1]*len(systems), colors=colors, radius=radius, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
-                # Add label if expression exceeds the threshold
-                if label_threshold and radius > label_threshold:
-                    ax.text(x, y, node, fontsize=24, ha='left', va='bottom')
             else:
                 ax.pie([1]*len(systems), colors=colors, radius=node_size, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
 
@@ -147,11 +162,10 @@ def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_b
             colors = [localization_colors[loc] for loc in localizations]
 
             if node_size == 'exp':
-                radius = gene_dict[node]['Expression']
+                # Draw pie chart at node position with edgecolor and linewidth
+                raw_radius = gene_dict[node]['Expression']
+                radius = get_radius(raw_radius, categories)
                 ax.pie([1]*len(localizations), colors=colors, radius=radius, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
-                # Add label if expression exceeds the threshold
-                if label_threshold and radius > label_threshold:
-                    ax.text(x, y, node, fontsize=24, ha='left', va='bottom')
             else:
                 ax.pie([1]*len(localizations), colors=colors, radius=0.012, center=(x, y), wedgeprops=dict(edgecolor='black', linewidth=0.5))
 
@@ -168,12 +182,28 @@ def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_b
     if legends:
         if color_by == 'systems':
             legend_patches = [mpatches.Patch(color=color, label=category) for category, color in system_colors.items()]
-            plt.legend(handles=legend_patches, prop={'size': 25}, loc='lower left', bbox_to_anchor=(0.9, 0.6))
-            plt.subplots_adjust(right=0.75)
+            color_legend = plt.legend(handles=legend_patches, prop={'size': 30}, loc='lower left', bbox_to_anchor=(0.6, 0.8), title="System" , title_fontsize=35)
         elif color_by == 'localization':
             legend_patches = [mpatches.Patch(color=color, label=category) for category, color in localization_colors.items()]
-            plt.legend(handles=legend_patches, prop={'size': 20}, loc='lower left', bbox_to_anchor=(0.9, 0.6))
-            plt.subplots_adjust(right=0.75)
+            color_legend = plt.legend(handles=legend_patches, prop={'size': 25}, loc='lower left', bbox_to_anchor=(0.7, 0.4), title="Subcellular Localization" , title_fontsize=35)
+
+        # Create custom legend handles for node sizes
+        size_legend_patches = []
+        size_labels = ['0 to 1', '1 to 2', '2 to 8', '8 to 16', '> 16']
+        scaling_factor = 1800
+
+        for (low, high), radius, label in zip(categories.keys(), categories.values(), size_labels):
+            handle = plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='black', markersize=radius * scaling_factor, label=label)
+            size_legend_patches.append(handle)
+
+        # Add the second legend for node sizes
+        size_legend = plt.legend(handles=size_legend_patches, prop={'size': 40}, loc='lower left', bbox_to_anchor=(0, 0.3), title="Fold Change", title_fontsize=35)
+
+        # Add both legends to the plot
+        ax.add_artist(color_legend)
+        ax.add_artist(size_legend)
+
+        plt.subplots_adjust(right=0.75)
 
     if filename:
         plt.savefig(filename, dpi=300, bbox_inches='tight')
