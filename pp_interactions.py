@@ -197,7 +197,7 @@ def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_b
             size_legend_patches.append(handle)
 
         # Add the second legend for node sizes
-        size_legend = plt.legend(handles=size_legend_patches, prop={'size': 40}, loc='lower left', bbox_to_anchor=(0, 0.3), title="Fold Change", title_fontsize=35)
+        size_legend = plt.legend(handles=size_legend_patches, prop={'size': 40}, loc='lower left', bbox_to_anchor=(0, 0.3), title="Log2 Fold Change", title_fontsize=35)
 
         # Add both legends to the plot
         ax.add_artist(color_legend)
