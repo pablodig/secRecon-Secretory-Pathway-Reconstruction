@@ -189,7 +189,7 @@ def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_b
 
         # Create custom legend handles for node sizes
         size_legend_patches = []
-        size_labels = ['0 to 1', '1 to 2', '2 to 8', '8 to 16', '> 16']
+        size_labels = ['0 to 2', '2 to 4', '> 4']
         scaling_factor = 1800
 
         for (low, high), radius, label in zip(categories.keys(), categories.values(), size_labels):
