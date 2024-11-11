@@ -81,7 +81,7 @@ This folder contains scripts and data for characterizing the secretory pathway 
 - Python 3.8+
 - R version 4.0+
 - Jupyter Notebook
-- Required Python packages (install via `pip`): `pandas`, `numpy`, `networkx`, `matplotlib`, `scikit-learn`
-- Required R packages (install via `install.packages()`): `limma`, `GSVA`, `ggplot2`, `dplyr`
+- Required Python packages (install via `pip` or conda): `pandas`, `numpy`, `networkx`, `matplotlib`, `scikit-learn`, `scanpy`, `seaborn`
+- Required R packages: `limma`, `GSVA`, `ggplot2`, `dplyr`, `corrplot`, `EnhancedVolcano`
 
 ---
