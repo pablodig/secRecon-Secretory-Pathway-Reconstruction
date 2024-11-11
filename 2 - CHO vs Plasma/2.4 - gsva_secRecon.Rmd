@@ -1,0 +1,579 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+
+```
+
+
+run GSVA DE on plasma vs CHO 
+```{r}
+cho.plasma.gsva
+```
+# pairwise DE for GSVA scores
+```{r}
+# function adopted from Helen's secCellFie vignette
+gsva.welch.test <- function(group1, group2, gsva, p.thresh, log2FC.thresh){
+  # add constant to whole gsva df
+  gsva <- gsva + 0.51
+  in.group1 <- gsva %>% dplyr::select(group1) #select(data.frame(gsva), group1) #%>% log2()
+  in.group2 <- gsva %>% dplyr::select(group2) #select(data.frame(gsva), group2) #%>% log2()
+  welch.df <- matrixTests::row_t_welch(in.group1, in.group2) %>% 
+    data.table::data.table() %>%
+    # cbind(taskInfo) %>% 
+    mutate(p.adjust := p.adjust(pvalue, method="BH")) %>% 
+    mutate(log2FC := log2(mean.x/mean.y)) #%>% mutate(log2FC := log2(FC))
+  
+  welch.df$process <- rownames(gsva)
+  
+  # sig.tasks <- dplyr::select(welch.df, c("mean.x", "mean.y", "mean.diff","log2FC", "p.adjust","process")) %>%
+  #   filter(p.adjust < p.thresh) %>% filter(log2FC < -log2(log2FC.thresh) | log2FC > log2(log2FC.thresh))
+  return(list(welch=welch.df))
+  # return(list(welch=welch.df, sigRes=sig.tasks))
+}
+```
+
+```{r}
+# gsva.test <- gsva.welch.test(prot.groups$mm,
+#                   prot.groups$cho,
+#                   as.data.frame(cho.plasma.gsva.pro),0.1,1.5)
+gsva.test <- gsva.welch.test(rna.groups$mm,
+                  rna.groups$cho,
+                  as.data.frame(cho.plasma.gsva),0.1,1.3)
+gsva.test
+```
+
+
+```{r}
+rna.groups <- list()
+rna.groups$cho <- c(CHO_DG44.t,CHO_K1.t)
+rna.groups$mm <- c(MPC.t,P3X.t)
+rna.groups$hu <- c(JK.t,Karpas.t)
+rna.groups$plasma = c(rna.groups$mm,rna.groups$hu)
+
+prot.groups <- list()
+prot.groups$cho <- c(CHO_DG44.p,CHO_K1.p)
+prot.groups$mm <- c(MPC.p,P3X.p)
+
+gsva.welch <- list()
+gsva.welch$rna_plasma.vs.cho <-
+  gsva.welch.test(rna.groups$plasma,
+                  rna.groups$cho,
+                  as.data.frame(cho.plasma.gsva),0.1,1)
+gsva.welch$rna_mm.vs.cho <-
+  gsva.welch.test(rna.groups$mm,
+                  rna.groups$cho,
+                  as.data.frame(cho.plasma.gsva),0.1,1.3)
+gsva.welch$prot_mm.vs.cho <-
+  gsva.welch.test(prot.groups$mm,
+                  prot.groups$cho,
+                  as.data.frame(cho.plasma.gsva.pro),0.1,1.5)
+
+```
+```{r}
+# cho.plasma.gsva.rna.welch$welch
+# cho.plasma.gsva.rna.welch$sigRes
+
+```
+
+```{r}
+# pairwise logFC of gsva between rna and pro
+gsva.rp <- list()
+gsva.rp$rna <- as.data.frame(gsva.welch$rna_mm.vs.cho$welch)
+rownames(gsva.rp$rna) <- gsva.rp$rna$process
+gsva.rp$pro <- as.data.frame(gsva.welch$prot_mm.vs.cho$welch)
+rownames(gsva.rp$pro) <- gsva.rp$pro$process
+
+gsva.intp <- intersect(rownames(gsva.rp$rna),rownames(gsva.rp$pro))
+
+gsva.rp$rna <- gsva.rp$rna[gsva.intp,]
+gsva.rp$pro <- gsva.rp$pro[gsva.intp,]
+
+gsva.rp$compare = gsva.rp$rna[,c('process','log2FC')]
+colnames(gsva.rp$compare) <- c('process','rna.log2FC')
+gsva.rp$compare$pro.log2FC = gsva.rp$pro$log2FC
+gsva.rp$compare
+
+ggscatter(gsva.rp$compare,x='rna.log2FC',y='pro.log2FC') + stat_cor(method='spearman',label.y.npc='top',size=3) + font('xy.text',size=8)
+```
+
+```{r}
+# how many sig pathways in common # 32 out of 72
+gsva.rp$sig.common <-intersect(subset(gsva.welch$rna_mm.vs.cho$welch,p.adjust < 0.05)$process,subset(gsva.welch$prot_mm.vs.cho$welch,p.adjust < 0.05)$process)
+length(gsva.rp$sig.common)
+
+ggscatter(gsva.rp$compare[gsva.rp$sig.common,],x='rna.log2FC',y='pro.log2FC') + stat_cor(method='spearman',label.y.npc='top',size=3) + font('xy.text',size=8) + ggtitle('sig processes (p<0.05) in both RNA/PROT')
+
+```
+
+```{r}
+# processes that are >0 and <0 in both
+subset(gsva.rp$compare[gsva.rp$sig.common,],(rna.log2FC > 0.1) & (pro.log2FC > 0.1))
+
+ggscatter(subset(gsva.rp$compare[gsva.rp$sig.common,],(rna.log2FC > 0.1) & (pro.log2FC > 0.1)),x='rna.log2FC',y='pro.log2FC') + stat_cor(method='spearman',label.y.npc='top',size=3) + font('xy.text',size=8) + ggtitle('sig processes (p<0.05) in both RNA/PROT')
+
+subset(gsva.rp$compare[gsva.rp$sig.common,],(rna.log2FC < 0) & (pro.log2FC < 0))
+
+ggscatter(subset(gsva.rp$compare[gsva.rp$sig.common,],(rna.log2FC < 0) & (pro.log2FC < 0)),x='rna.log2FC',y='pro.log2FC') + stat_cor(method='spearman',label.y.npc='top',size=3) + font('xy.text',size=8) + ggtitle('sig processes (p<0.05) in both RNA/PROT')
+```
+
+
+
+helen's log2FC plots and/or volcano plots to follow up
+
+```{r}
+length(sec.db$`O-glycan`)
+length(sec.db$`O-glycan mucin`)
+length(sec.db$`O-glycan not-mucin`)
+length(intersect(sec.db$`O-glycan`,rownames(cho.plasma$rna_sec)))
+length(intersect(sec.db$`O-glycan`,sec.db$`O-glycan mucin`)) # 35
+length(intersect(sec.db$`O-glycan not-mucin`,sec.db$`O-glycan mucin`)) # 0
+length(intersect(sec.db$`O-glycan not-mucin`,sec.db$`O-glycan`)) # 36
+```
+
+```{r}
+# add gsva welch for processes with more than 5 genes
+sec.db.flt <- list()
+for (i in names(sec.db)) {
+  if (length(sec.db[[i]]) > 5) {
+    sec.db.flt[[i]] = sec.db[[i]]}}
+length(sec.db.flt)
+```
+
+```{r}
+gsva.welch$rna_mm.vs.cho.flt <- subset(gsva.welch$rna_mm.vs.cho$welch,(p.adjust < 0.05) & (process %in% names(sec.db.flt)))
+
+gsva.welch$pro_mm.vs.cho.flt <- subset(gsva.welch$prot_mm.vs.cho$welch,(p.adjust < 0.05) & (process %in% names(sec.db.flt)))
+```
+
+```{r}
+lapply(gsva.welch,dim)
+```
+
+
+
+```{r}
+dotplot.gsva <- lapply(gsva.welch,function(x) {
+  if (is.null(x$sigRes)) {x.plot <- x %>% arrange(log2FC)} else {x.plot <- x$sigRes %>% arrange(log2FC)}
+  
+  level.order <- arrange(x.plot, log2FC)
+  x.plot <- mutate(x.plot,process=factor(process, levels=unique(level.order$process)))
+})
+# dotplot.gsva.rna <- cho.plasma.gsva.rna.welch$sigRes %>% arrange(log2FC)
+# level.order <- arrange(dotplot.gsva.rna, log2FC)
+# dotplot.gsva.rna <- mutate(dotplot.gsva.rna,process=factor(process, levels=unique(level.order$process)))
+```
+
+```{r fig.height=3, fig.width=4}  
+#fig.height=3, fig.width=4
+for (i in names(dotplot.gsva)) {
+  p1 <- ggplot(dotplot.gsva[[i]], aes(log2FC, process)) + 
+    geom_point(aes(size=p.adjust,color=process), size=3, alpha=0.7,show.legend = F) +
+    scale_color_manual(values=sec.colmap) +
+    theme(text=element_text(size=8), axis.title.y=element_blank()) +
+    ggtitle(paste(i,'GSVA')) +
+    geom_vline(xintercept = 0, linetype="dotted", color = "red", size=1) #+ scale_colour_gradient(low = "indianred3", high = "orchid4")
+  print(p1)}
+
+# scale_color_manual(values=col)
+```
+
+
+```{r}
+# what are the FC expr for O-glycan mucin genes
+data.rna = readxl::read_excel('/Users/jasminetat/Downloads/ScienceDirect_files_01Jul2024_00-55-44.462/1-s2.0-S1096717624000521-mmc3.xlsx',sheet='Transcriptome DE')
+data.prot = readxl::read_excel('/Users/jasminetat/Downloads/ScienceDirect_files_01Jul2024_00-55-44.462/1-s2.0-S1096717624000521-mmc3.xlsx',sheet='Proteome DE proteins')
+data.sec = readxl::read_excel('/Users/jasminetat/Downloads/ScienceDirect_files_01Jul2024_00-55-44.462/1-s2.0-S1096717624000521-mmc3.xlsx',sheet='Secretome DE proteins')
+```
+
+```{r}
+# get named and ranked vector of l2FC
+fc.rna <- data.rna$`Fold-Change CHO/Murine`
+names(fc.rna) <- toupper(data.rna$Mmus_Genes)
+
+fc.prot <- log2(data.prot$`FC PCD/CHO`)
+names(fc.prot) <- toupper(data.prot$Mmus_Genes)
+
+## convert CHO/murine FC to l2FC and invert to murine/CHO
+
+
+## convert FC to l2FC
+### -FC was calculated as -1/FC according to methods --> convert it back to just FC
+l2fc.rna <- sapply(fc.rna,function(x) {
+  # adjust negative FC to cho/murine FC
+  if (x < 0) {x.adj <- -1/x} else {x.adj <- x}
+  
+  # invert FC to murine/CHO FC
+  # x.fc <- x.adj^-1 
+  return(log2(x.adj))
+})
+l2fc.rna <- l2fc.rna[order(l2fc.rna)]
+
+l2fc.prot <- fc.prot[order(fc.prot)]
+
+
+# head(fc.rna)
+head(l2fc.rna)
+head(l2fc.prot)
+```
+
+```{r}
+# plot subprocess log2FC genes
+# sr.l2fc.rna <- list()
+sr.process <- c('ERpQC', 'Vesicle budding', 'PERK pathway','MAPS', 'Translocation', 'N-glycan')
+
+# sr.process <- c('O-glycan','Heparan sulfate','MAPS','Chondroitin sulfate','Glycosaminoglycan','COPI','ERpQC')
+for (p in sr.process) {
+  r.l2fc <- l2fc.rna[intersect(names(l2fc.rna),sec.db[[p]])]
+  
+  r.l2fc.df <- data.frame(
+  gene = names(r.l2fc),
+  l2fc = as.numeric(r.l2fc)
+) %>% arrange(l2fc)
+
+  p1 <- ggplot(r.l2fc.df, aes(x = l2fc, y = reorder(gene,l2fc))) +
+    geom_bar(stat = "identity") +
+    theme_minimal() +
+    labs(title = paste(p,"mm plasma/cho RNA"),
+         x = "l2fc",
+         y = "gene") + theme(axis.text.y = element_text(size = 6))
+  print(p1)
+
+}
+# l2fc.rna.oglycan <- l2fc.rna[intersect(names(l2fc.rna),sec.db$`O-glycan`)]
+# l2fc.pro.oglycan <- l2fc.prot[intersect(names(l2fc.prot),sec.db$`O-glycan`)]
+# 
+# l2fc.rna.oglycan
+# l2fc.pro.oglycan
+```
+
+```{r}
+for (p in sr.process) {
+  r.l2fc <- l2fc.prot[intersect(names(l2fc.prot),sec.db[[p]])]
+  
+  r.l2fc.df <- data.frame(
+  gene = names(r.l2fc),
+  l2fc = as.numeric(r.l2fc)
+) %>% arrange(l2fc)
+
+  p1 <- ggplot(r.l2fc.df, aes(x = l2fc, y = reorder(gene,l2fc))) +
+    geom_bar(stat = "identity") +
+    theme_minimal() +
+    labs(title = paste(p,"mm plasma/cho PROT"),
+         x = "l2fc",
+         y = "gene") + theme(axis.text.y = element_text(size = 6))
+  print(p1)
+
+}
+```
+
+
+```{r}
+l2fc.rna.oglycan.df <- data.frame(
+  gene = names(l2fc.rna.oglycan),
+  l2fc = as.numeric(l2fc.rna.oglycan)
+) %>% arrange(l2fc)
+
+# Step 3: Plot the data using ggplot2
+ggplot(l2fc.rna.oglycan.df, aes(x = l2fc, y = reorder(gene,l2fc))) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "o-glycan mm plasma/cho",
+       x = "l2fc",
+       y = "gene")
+```
+
+
+```{r fig.height=3, fig.width=3}
+length(intersect(rownames(cho.plasma$rna_sec),sec.db$`O-glycan`))
+
+pheatmap(cho.plasma$rna_sec[intersect(rownames(cho.plasma$rna_sec),sec.db$`O-glycan`),c(rna.groups$cho,rna.groups$mm)],
+         fontsize_row = 4)
+pheatmap(cho.plasma$rna_sec[intersect(rownames(cho.plasma$rna_sec),sec.db$`O-glycan`),c(rna.groups$cho,rna.groups$mm)],
+         fontsize_row = 4,scale = 'row')
+
+pheatmap(cho.plasma$pro_sec[intersect(rownames(cho.plasma$pro_sec),sec.db$`O-glycan`),c(prot.groups$cho,prot.groups$mm)],
+         fontsize_row = 4)
+pheatmap(cho.plasma$pro_sec[intersect(rownames(cho.plasma$pro_sec),sec.db$`O-glycan`),c(prot.groups$cho,prot.groups$mm)],
+         fontsize_row = 4,scale = 'row')
+```
+
+```{r}
+l2fc.rna.sec <- l2fc.rna[intersect(names(l2fc.rna),unlist(sec.db))]
+l2fc.pro.sec <- l2fc.prot[intersect(names(l2fc.prot),unlist(sec.db))]
+
+length(l2fc.rna.sec)
+length(l2fc.pro.sec)
+
+l2fc.rp.sec.g <- intersect(names(l2fc.rna.sec),names(l2fc.pro.sec))
+
+l2fc.rp.sec <- data.frame(cbind(l2fc.rna.sec[l2fc.rp.sec.g],l2fc.pro.sec[l2fc.rp.sec.g]))
+colnames(l2fc.rp.sec) <- c('rna.log2FC','pro.log2FC')
+ggscatter(l2fc.rp.sec,x='rna.log2FC',y='pro.log2FC') + stat_cor(method='spearman',label.y.npc='top',size=3) + font('xy.text',size=8) + ggtitle(paste(length(l2fc.rp.sec.g),'secRecon genes'))
+```
+
+```{r}
+# for the secrecon genes that are DE in both RNA/PROT, highlight the consistent upregulated terms and label the ones that are similarly dysregulated
+
+
+sr.process.ev <- c('ERpQC', 'Vesicle budding', 'PERK pathway', 'Co-translational translocation', 'N-glycan','Hydroxylysine','other')
+
+# assign unique colorpalette to metadata
+sec.ev.meta.colors.pg <- c('red','green','cornflowerblue','purple','darkgreen','darkkhaki','grey') #c('blue3','orange','green','darkkhaki','skyblue','yellow','red')
+
+names(sec.ev.meta.colors.pg) = sr.process.ev 
+sec.ev.meta.colors.pg
+
+```
+
+```{r}
+# ggplot(l2fc.rp.sec.ev, aes(x = rna.log2FC, y = pro.log2FC)) + scale_color_manual(values=sec.ev.meta.colors.pg) + guides(color = guide_legend(title='Process')) + theme(legend.position = 'right')
+
+# Sample data
+sdata <- data.frame(
+  x = rnorm(14),
+  y = rnorm(14),
+  group = factor(rep(1:7, each=2), labels = sr.process.ev))
+
+# Create scatter plot with custom legend
+ggplot(sdata, aes(x = x, y = y, color = group)) +
+  geom_point(size = 3) +
+  scale_color_manual(
+    values = sec.ev.meta.colors.pg,
+    name = "Process"  # Custom legend title
+    # labels = c("Custom Label 1", "Custom Label 2")  # Custom legend labels
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+# get these consistent genes to label
+sr.process.ev.genes <- unlist(sec.db[sr.process.ev])
+
+sr.process.ev.genes.color <- c()
+# sr.process.ev.genes.color.process <- c()
+for (g in l2fc.rp.sec.g) {
+  if (g %in% sr.process.ev.genes) {
+    # return matched process
+    g.process <- names(Filter(function(x) g %in% x, sec.db[sr.process.ev]))
+    # print(length(g.process))
+    sr.process.ev.genes.color = append(sr.process.ev.genes.color,sec.ev.meta.colors.pg[[g.process[[1]]]])
+    # sr.process.ev.genes.color.process = append(sr.process.ev.genes.color.process,g.process[[1]])
+  } else {sr.process.ev.genes.color = append(sr.process.ev.genes.color,'grey')
+   # sr.process.ev.genes.color.process = append(sr.process.ev.genes.color.process,'other')}
+}}
+
+names(sr.process.ev.genes.color) <- l2fc.rp.sec.g
+
+
+l2fc.rp.sec.g.targets <- c()
+
+for (g in sr.process.ev.genes) {
+  if (g %in% l2fc.rp.sec.g) {
+    # print(g)
+    if (sign(l2fc.rna.sec[[g]]) == sign(l2fc.pro.sec[[g]])) {
+      l2fc.rp.sec.g.targets = append(l2fc.rp.sec.g.targets,g)
+  }}}
+l2fc.rp.sec.g.targets
+```
+
+
+```{r fig.height=3, fig.width=4}
+# Create scatter plot
+l2fc.rp.sec.ev <- l2fc.rp.sec
+l2fc.rp.sec.ev$gene <- rownames(l2fc.rp.sec.ev)
+l2fc.rp.sec.ev$process <- sr.process.ev.genes.color
+
+ggplot(l2fc.rp.sec.ev, aes(x = rna.log2FC, y = pro.log2FC)) +
+  geom_point(aes(color = factor(names(sr.process.ev.genes.color))),
+                 size = 4,alpha=0.8) +  # Color points by label
+  scale_color_manual(values = sr.process.ev.genes.color) +  # Set custom colors  # Add labels for specific points
+  theme_minimal() + theme(legend.position="none",
+                          axis.text.x =element_text(size=12),
+                          axis.text.y =element_text(size=12),
+                          axis.title.x =element_text(size=12),
+                          axis.title.y =element_text(size=12)) + 
+  geom_segment(aes(x=0.58,xend=max(l2fc.rp.sec$rna.log2FC)+1,y=0.58,yend=0.58),color='darkgrey',linetype='longdash') +
+  geom_segment(aes(x=0.58,xend=0.58,y=0.58,yend=max(l2fc.rp.sec$pro.log2FC)+1),color='darkgrey',linetype='longdash') +
+  geom_segment(aes(x=-0.58,xend=min(l2fc.rp.sec$rna.log2FC)-1,y=-0.58,yend=-0.58),color='darkgrey',linetype='longdash') +
+  geom_segment(aes(x=-0.58,xend=-0.58,y=-0.58,yend=min(l2fc.rp.sec$pro.log2FC)-1),color='darkgrey',linetype='longdash') +
+  geom_hline(yintercept =0,color='black') +
+  geom_vline(xintercept =0,color='black') +
+  geom_label_repel(
+        data = l2fc.rp.sec.ev[l2fc.rp.sec.g.targets,],
+        aes(label = l2fc.rp.sec.ev[l2fc.rp.sec.g.targets,'gene']),
+        box.padding = 0.3,     # Adjust padding around labels
+        point.padding = 0.2,
+        # size = labSize,
+        segment.color = 'grey10',
+        segment.size = 0.5,
+        # arrow = arr,
+        colour = 'black',
+        fontface = 'plain',
+        parse = F,
+        na.rm = TRUE,
+        direction = 'both',
+        max.overlaps = 15,
+        min.segment.length = 0) +
+  xlab('RNA log2FC') + ylab('PROTEIN log2FC') 
+```
+
+```{r}
+# save.image("2_.RData")
+load("2_.RData")
+```
+
+# plasma secretome
+```{r}
+paper1.ogly <- readxl::read_excel('//Users/jasminetat/Downloads/ba002121-suppl2.xlsx',sheet='Table S5')
+paper1.ogly
+plasma.secretome <- readxl::read_excel('/Users/jasminetat/Downloads/ScienceDirect_files_01Jul2024_00-55-44.462/1-s2.0-S1096717624000521-mmc3.xlsx',sheet='Secretome DE proteins')
+plasma.secretome
+
+paper1.ogly.conv <- readxl::read_excel('/Users/jasminetat/Downloads/idmapping_2024_08_16.xlsx')
+```
+
+```{r}
+# clausen simplecell db 10.1038/emboj.2013.79
+paper2.ogly <- readxl::read_excel('/Users/jasminetat/Downloads/embj201379-sup-0002.xls',skip=1)
+paper2.ogly.g <- stringr::str_to_title(unique(paper2.ogly$`Gene Name`))
+length(paper2.ogly.g)
+```
+
+
+```{r}
+# overlap in oglycan proteins in the secretome data
+plasma.secretome.p <- 
+unique(unlist(lapply(plasma.secretome$Mmus_UniProt, function(x) strsplit(x, ";")[[1]])))
+length(plasma.secretome.p)
+head(plasma.secretome.p)
+
+plasma.secretome.g <- 
+unique(unlist(lapply(plasma.secretome$Mmus_Gene, function(x) strsplit(x, ";")[[1]])))
+length(plasma.secretome.g)
+head(plasma.secretome.g)
+
+paper1.ogly.p <- unique(paper1.ogly$uniprot)
+length(paper1.ogly.p)
+paper1.ogly.g <- stringr::str_to_title(unique(paper1.ogly.conv$To))
+length(paper1.ogly.g)
+
+
+length(intersect(plasma.secretome.p,paper1.ogly.p))
+length(intersect(plasma.secretome.g,paper1.ogly.g))
+length(intersect(plasma.secretome.g,paper2.ogly.g))
+# only 33/213 oglycoprotein genes are represented according to paper1
+# only 38/213 oglycoprotein genes are represented according to paper2
+```
+
+```{r}
+o.secretome <- intersect(plasma.secretome.g,c(paper1.ogly.g,paper2.ogly.g))
+# intersect(plasma.secretome.g,paper1.ogly.g)
+# intersect(plasma.secretome.g,paper2.ogly.g)
+
+length(intersect(intersect(plasma.secretome.g,paper1.ogly.g),intersect(plasma.secretome.g,paper2.ogly.g))) # 23
+## meaning paper1 is predom contained in paper2
+
+length(o.secretome) # 48
+```
+
+```{r}
+# overlap of oglycoproteins in rna/prot data
+rna.ogl <- intersect(names(l2fc.rna),toupper(c(paper1.ogly.g,paper2.ogly.g))) # 339
+pro.ogl <- intersect(names(l2fc.prot),toupper(c(paper1.ogly.g,paper2.ogly.g))) # 127
+
+rna.ogl.sr <- intersect(names(l2fc.rna),sec.db$`O-glycan`) # 24
+pro.ogl.sr <- intersect(names(l2fc.prot),sec.db$`O-glycan`) # 6
+
+length(intersect(rna.ogl,pro.ogl))
+
+print('secrecon oglycan')
+print(length(sec.db$`O-glycan`)) # 88
+print(length(intersect(sec.db$`O-glycan`,toupper(c(paper1.ogly.g,paper2.ogly.g))))) # 33/88
+# 
+# l2fc.rna.sec <- l2fc.rna[intersect(names(l2fc.rna),unlist(sec.db))]
+# l2fc.pro.sec <- l2fc.prot[intersect(names(l2fc.prot),unlist(sec.db))]
+# 
+# length(l2fc.rna.sec)
+# length(l2fc.pro.sec)
+# 
+# l2fc.rp.sec.g <- intersect(names(l2fc.rna.sec),names(l2fc.pro.sec))
+
+l2fc.rp.ogl <- data.frame(cbind(l2fc.rna[intersect(rna.ogl,pro.ogl)],l2fc.prot[intersect(rna.ogl,pro.ogl)]))
+colnames(l2fc.rp.ogl) <- c('rna.log2FC','pro.log2FC')
+ggscatter(l2fc.rp.ogl,x='rna.log2FC',y='pro.log2FC') + stat_cor(method='spearman',label.y.npc='top',size=3) + font('xy.text',size=8) + ggtitle(paste(length(l2fc.rp.sec.g),'oglyc proteins genes'))
+
+l2fc.rp.ogl.sr <- data.frame(cbind(l2fc.rna[intersect(rna.ogl.sr,pro.ogl.sr)],l2fc.prot[intersect(rna.ogl.sr,pro.ogl.sr)]))
+colnames(l2fc.rp.ogl.sr) <- c('rna.log2FC','pro.log2FC')
+ggscatter(l2fc.rp.ogl.sr,x='rna.log2FC',y='pro.log2FC') + stat_cor(method='spearman',label.y.npc='top',size=3) + font('xy.text',size=8) + ggtitle('oglyc machinery')
+
+hist(l2fc.rna[rna.ogl])
+hist(l2fc.prot[pro.ogl])
+hist(l2fc.prot[intersect(names(l2fc.prot),sec.db$`Membrane fusion`)])
+```
+```{r}
+intersect(sec.db$`O-glycan`,sec.db$`Membrane fusion`)
+sec.db$`Membrane fusion`
+
+write.csv(sec.db$`O-glycan`,'/Users/jasminetat/Downloads/oglycan.txt',row.names = F)
+write.csv(sec.db$`Membrane fusion`,'/Users/jasminetat/Downloads/membranefusion.txt',row.names = F)
+```
+
+```{r}
+om.g <- c('STX5','STX6','SNAP29','OGT','EOGT','GALNT2')
+
+l2fc.rna[intersect(names(l2fc.rna),om.g)]
+l2fc.prot[intersect(names(l2fc.prot),om.g)]
+```
+
+
+
+```{r}
+# l2fc of o secretome
+length(intersect(names(l2fc.rna),toupper(o.secretome)))
+length(intersect(names(l2fc.prot),toupper(o.secretome)))
+
+l2fc.rna[intersect(names(l2fc.rna),toupper(o.secretome))]
+l2fc.rna[intersect(names(l2fc.prot),toupper(o.secretome))]
+
+```
+
+
+```{r}
+subset(plasma.secretome,Mmus_Gene %in% o.secretome)
+```
+
+
+```{r}
+# convert mouse to hu uniprot
+# Access Ensembl BioMart
+ensembl = useMart("ensembl")
+mouse = useDataset("mmusculus_gene_ensembl", mart = ensembl)
+human = useDataset("hsapiens_gene_ensembl", mart = ensembl)
+
+# Example mouse UniProt IDs
+# mouse_ids = c("P12345", "Q67890")  # Replace with your actual UniProt IDs
+
+uniprot_ids = c("P12345", "Q67890")
+
+conversion = getBM(
+  attributes = c("uniprot_swissprot", "hgnc_symbol"), 
+  filters = "uniprot_swissprot", 
+  values = uniprot_ids, 
+  mart = human
+)
+
+# Convert to human UniProt IDs
+# plasma.secretome.p.hu = getLDS(
+#   attributes = c("uniprot_swissprot"), 
+#   filters = "uniprot_swissprot", 
+#   values = plasma.secretome.p, 
+#   mart = mouse,
+#   attributesL = c("uniprot_swissprot"), 
+#   martL = human
+# )
+```
+
