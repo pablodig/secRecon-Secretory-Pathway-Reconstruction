@@ -73,6 +73,12 @@ This folder contains lists of transcription factors (TFs) enriched from IPA upst
 
 1. **secRecon\_TF\_enrichment.ipynb**: This Jupyter notebook compiles and compares these lists of TFs.
 
+Krämer, A., Green, J., Pollard, J., Jr & Tugendreich, S. Causal analysis approaches in Ingenuity Pathway Analysis. Bioinformatics 30, 523–530 (2014).
+
+Keenan, A. B. et al. ChEA3: transcription factor enrichment analysis by orthogonal omics integration. Nucleic Acids Res. 47, W212–W224 (2019).
+
+Lund, A. M. et al. Network reconstruction of the mouse secretory pathway applied on CHO cell transcriptome data. BMC Syst. Biol. 11, 37 (2017).
+
 ## 5 - Gtex\_correlation
 
 This folder contains scripts and GTEx data to explore potential systemic and literature biases in secRecon curation and relevance scoring.
@@ -82,7 +88,11 @@ This folder contains scripts and GTEx data to explore potential systemic and li
 1. **0\_gtex\_secrecon\_char.Rmd**: This R Markdown file uses GTEx data to performs tissue-specific analysis, correlation average secRecon gene expression with curated metrics including number of annotated secRecon terms, max relevance score, mean relevance scoring.
 
 ### Data
-GTEx RNA-seq data (TPM expression) can be downloaded from HPA database, consists of transcriptomics data spanning 35 tissues based on 46 tissue subtypes. (https://www.proteinatlas.org/humanproteome/tissue/data#gtex_tissue_groups_rna, 10.1038/ng.2653, 10.1038/nature24277, 10.1126/science.aaz1776)
+GTEx RNA-seq data (TPM expression) can be downloaded from HPA database, consists of transcriptomics data spanning 35 tissues based on 46 tissue subtypes (https://www.proteinatlas.org/humanproteome/tissue/data#gtex_tissue_groups_rna)
+
+GTEx Consortium. The GTEx Consortium atlas of genetic regulatory effects across human tissues. Science 369, 1318–1330 (2020).
+
+GTEx Consortium et al. Genetic effects on gene expression across human tissues. Nature 550, 204–213 (2017).
 
 ## Usage Instructions
 
