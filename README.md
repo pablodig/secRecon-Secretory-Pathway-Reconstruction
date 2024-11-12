@@ -11,7 +11,7 @@ This folder, **01 - Network Reconstruction**, contains all the essential code us
 
 ### Contents
 
-1. **1.1 - Feature\_Extraction.ipynb**: This Jupyter notebook extracts relevant features from different databases and includes it into secRecon
+1. **1.1 - Feature\_Extraction.ipynb**: This Jupyter notebook performs ortholog mapping, extracts relevant features from different databases, and includes it into secRecon
 
 2. **1.2 - Functional\_Ontology\_Network.ipynb**: This notebook is responsible for constructing the **Functional Ontology Network**. It uses the processed gene and process data to build a network that describes relationships between genes based on their biological function and ontology.&#x20;
 
