@@ -1,12 +1,13 @@
 # secRecon: Secretory Pathway Reconstruction
 
-This repository, **secRecon**, contains all the necessary code to generate the figures and analyses presented in the  paper:
+This repository, **secRecon**, contains all the necessary code to generate the figures and analyses presented in the paper: A reconstruction of the mammalian secretory pathway
+identifies mechanisms regulating antibody production
 
-This paper introduces secRecon, a comprehensive reconstruction of the mammalian secretory pathway, highlighting its utility in contextualizing omics data and uncovering insights into secretory phenotypes. The repository includes multiple modules to facilitate the reconstruction and analysis of the secretory pathway, and it is structured into several folders, each addressing specific aspects of the network reconstruction and analysis process.
+This paper introduces secRecon, a comprehensive reconstruction of the mammalian secretory pathway, highlighting its utility in contextualizing omics data and uncovering subprocess- to gene-level insights into secretory phenotypes. The repository includes multiple modules to facilitate the analysis of the secretory pathway over multiple species, cell types, and biological conditions. The repository is structured into several folders, each applying secRecon to a different dataset and addressing specific questions linking secretory machinery to phenotypes of interest.
 
 ## 1 - Network Reconstruction
 
-This folder, **01 - Network Reconstruction**, contains all the essential used to map data from different databases and datasets into secRecon and the Functional and PPI networkl topology generation.
+This folder, **01 - Network Reconstruction**, contains all the essential code used to map data from different databases and datasets into secRecon and the Functional and PPI networkl topology generation.
 
 ### Contents
 
@@ -18,53 +19,63 @@ This folder, **01 - Network Reconstruction**, contains all the essential used to
 
 ## 2 - CHO vs Plasma
 
-This folder contains notebooks and scripts used to perform various analyses on the CHO vs Plasma multi-omics datasets, aiming to extract meaningful insights using secRecon.
+This folder contains notebooks and scripts used to perform various analyses on the CHO vs Plasma multi-omics dataset, aiming to explore differential secretory topologies and identify potential CHO engineering targets using secRecon.
 
 ### Contents
 
-1. **2.1 - preprocess\_multiomics.ipynb**: This Jupyter notebook focuses on preprocessing multi-omics data, which includes transcriptomics, proteomics, and other omics data types.
+1. **2.1 - preprocess\_multiomics.ipynb**: This Jupyter notebook focuses on preprocessing the transcriptomics and proteomics datasets, grouping the data into upregulated and downregulated genes/proteins in human and murine plasma cells relative to antibody secreting CHO cells. This data is used dowmstream in network analysis (2.5)
 
-2. **2.2 - correlation\_hclust.Rmd**: This R Markdown file performs hierarchical clustering of correlation data from multi-omics datasets. The clustering helps in identifying patterns across genes and proteins, providing insights into their co-regulation and functional interactions.
+2. **2.2 - correlation\_hclust.Rmd**: This R Markdown file performs Spearman correlation and dendrogram correlations of secretory pathway topologies at the gene/protein and process level for both transcriptomic and proteomic datasets. Gene Set Variation Analysis (GSVA) is used to score secRecon geneset activity.
 
-3. **2.3 - gsva\_limma.Rmd**: This R Markdown file applies Gene Set Variation Analysis (GSVA) followed by differential analysis using `limma`. The goal is to identify significantly varying pathways across different conditions in the secretory pathway.
+3. **2.3 - gsva\_limma.Rmd**: This R Markdown file performs differential analysis of secRecon GSVA scores using `limma` to identify differentially active and inactive secretory process in plasma cells vs CHO cells. Potential engineering targets in these enriched processes are identified.
 
-4. **2.4 - gsva\_secRecon.Rmd**: This file focuses on applying GSVA specifically to the reconstructed secretory pathway (secRecon). The analysis helps in understanding how specific pathways behave under various experimental conditions.
+5. **2.4 - Cho\_vs\_plasma\_network\_analysis.ipynb**: This Jupyter notebook generates and compares network features between CHO cells and plasma cells. It aims to highlight significant topological differences that could be leveraged to enhance protein production or understand cell-specific characteristics of the secretory pathway.
 
-5. **2.5 - Cho\_vs\_plasma\_network\_analysis.ipynb**: This Jupyter notebook generates and compares network features between CHO cells and plasma cells. It aims to highlight significant differences that could be leveraged to enhance protein production or understand cell-specific characteristics of the secretory pathway.
+### Data
+Multi-omics data used in this analysis was generated by Raab et al. and can be downloaded from the Supplementary Materials of original manuscript (doi: 10.1016/j.ymben.2024.03.007); specific files required: 1-s2.0-S1096717624000521-mmc2.xlsx, 1-s2.0-S1096717624000521-mmc3.xlsx
 
-## 3 - Sec-seq Analysis
+Raab, N. et al. Nature as blueprint: Global phenotype engineering of CHO production cells based on a multi-omics comparison with plasma cells. Metab. Eng. 83, 110–122 (2024). doi: 10.1016/j.ymben.2024.03.007
 
-This folder, contains scripts used to perform analyses with a Sec-seq dataset using secRecon, such as correlation studies, dimension reduction, and dominance analysis.
+## 3 - SEC-seq Analysis
+
+This folder, contains scripts used to perform analyses with a SEC-seq dataset using secRecon to identify secretory pathway signatures linked to plasma cell differentiation and single-cell IgG secretion.
 
 ### Contents
 
-1. **0a\_extract\_ppi\_network.Rmd**: This R Markdown file extracts the Protein-Protein Interaction (PPI) network data. This serves as the initial step to prepare the dataset for further correlation analysis and network integration.
+1. **0a\_extract\_ppi\_network.Rmd**: This R Markdown file prepares the Protein-Protein Interaction (PPI) network edgelist for secRecon PPI scoring. PPI networks are extracted from STRINGdb and PCNet databases.
 
-2. **0b\_Preprocess-DimensionReduction-Pseudotime.ipynb**: This Jupyter notebook preprocesses the omics data and performs dimension reduction and pseudotime analysis. This helps in identifying key states and transitions in the secretory pathway.
+2. **0b\_Preprocess-DimensionReduction-Pseudotime.ipynb**: This Jupyter notebook preprocesses the raw SEC-seq data from 3 human donor samples, performs dimension reduction and pseudotime analysis as described by Cheng et al. 
 
-3. **1\_score-secRecon-activity.ipynb**: This notebook scores the activity of secRecon under different conditions. It aims to quantify pathway activity and identify conditions that promote or suppress secretory functions.
+3. **1\_score-secRecon-activity.ipynb**: This notebook scores the activity of secRecon processes using Seurat Feature scoring and ORIGINS2 PPI scoring. secRecon ontology and annotations are used to defined genesets. Process scores are used as features for Dominance Analysis and Spearman correlation against single-cell phenotypes (IgG secretion, pseudotime).
 
-4. **2\_Dominance-Analysis.ipynb**: This notebook performs dominance analysis to determine the impact of different genes and conditions on the secretory pathway. This type of analysis is useful for identifying major regulators and their influence on pathway outcomes.
+4. **2\_Dominance-Analysis.ipynb**: This notebook performs Dominance Analysis to predict the most important secRecon processes linked to IgG secretion and plasma cell differentiation. Dominance Analysis is applied to different clusters to dissect secretory pathway signatures associated with transcriptomic and phenotypic heterogeneity.
 
-5. **3\_Correlation-DEG.ipynb**: This notebook identifies differentially expressed genes (DEGs) and performs correlation analysis. The results help in understanding co-regulation and identifying key gene modules that respond to experimental perturbations.
+5. **3\_Correlation-DEG.ipynb**: This notebook performs secRecon subprocess- and gene-level correlation with IgG secretion and plasma cell differentiation phenotypes. Key secretory processes and machinery are identified as markers for IgG secretion efficiency and plasma cell differentiation.
 
-6. **4\_IgGpopulation\_correlation.Rmd**: This R Markdown file performs correlation analysis focused specifically on IgG populations. It aims to explore relationships within IgG production and how these relate to other functional components in the secretory pathway.
+6. **4\_IgGpopulation\_correlation.Rmd**: This R Markdown file performs secRecon gene-level correlation and dendrogram correlation for pseudobulk groups for IgG producing Leiden clusters. It aims to explore secretory topological differences between these distinct clusters.
+
+### Data
+SEC-seq data used in this analysis was generated by Cheng et al. and can be downloaded from GEO under accession number “GSE229042”. 
+Cheng, R. Y.-H. et al. SEC-seq: association of molecular signatures with antibody secretion in thousands of single human plasma cells. Nat. Commun. 14, 3567 (2023) doi: 10.1038/s41467-023-39367-8
 
 ## 4 - secRecon\_TF\_enrichment
 
-This folder contains notebooks and scripts for analyzing transcription factor enrichment in the secRecon components. The aim is to identify transcription factors that may play a regulatory role in the observed pathway dynamics.
+This folder contains lists of transcription factors (TFs) enriched from IPA upstream regulator analysis, ChEA3, and Lund et al. RECON for secRecon genes. The aim is to identify transcription factors that may play a regulatory role in the mammalian secretory pathway and may be integrated/annotated in the knowledgebase in future versions.
 
 ### Contents
 
-1. **secRecon\_TF\_enrichment.ipynb**: This Jupyter notebook performs transcription factor enrichment analysis on secRecon. It identifies key transcription factors that may be regulating the secretory pathway and visualizes their potential impact on network activity.
+1. **secRecon\_TF\_enrichment.ipynb**: This Jupyter notebook compiles and compares these lists of TFs.
 
 ## 5 - Gtex\_correlation
 
-This folder contains scripts and data for characterizing the secretory pathway using GTEx data. The aim is to explore gene expression in various tissues and gain insights into how the secretory pathway is regulated across different biological contexts.
+This folder contains scripts and GTEx data to explore potential systemic and literature biases in secRecon curation and relevance scoring.
 
 ### Contents
 
-1. **0\_gtex\_secrecon\_char.Rmd**: This R Markdown file uses GTEx data to characterize the reconstructed secretory pathway. It performs tissue-specific analysis, identifying differential expression patterns and linking these patterns to secretory pathway activity.
+1. **0\_gtex\_secrecon\_char.Rmd**: This R Markdown file uses GTEx data to performs tissue-specific analysis, correlation average secRecon gene expression with curated metrics including number of annotated secRecon terms, max relevance score, mean relevance scoring.
+
+### Data
+GTEx RNA-seq data (TPM expression) can be downloaded from HPA database, consists of transcriptomics data spanning 35 tissues based on 46 tissue subtypes. (https://www.proteinatlas.org/humanproteome/tissue/data#gtex_tissue_groups_rna, 10.1038/ng.2653, 10.1038/nature24277, 10.1126/science.aaz1776)
 
 ## Usage Instructions
 
@@ -81,7 +92,7 @@ This folder contains scripts and data for characterizing the secretory pathway 
 - Python 3.8+
 - R version 4.0+
 - Jupyter Notebook
-- Required Python packages (install via `pip` or conda): `pandas`, `numpy`, `networkx`, `matplotlib`, `scikit-learn`, `scanpy`, `seaborn`
-- Required R packages: `limma`, `GSVA`, `ggplot2`, `dplyr`, `corrplot`, `EnhancedVolcano`
+- Required Python packages (install via `pip` or conda): `pandas`, `numpy`, `networkx`, `matplotlib`, `scikit-learn`, `scanpy`, `seaborn`, `scipy`, `pickle`, `dominance_analysis`
+- Required R packages: `limma`, `GSVA`, `ggplot2`, `dplyr`, `corrplot`, `EnhancedVolcano`, `dendextend`
 
 ---
