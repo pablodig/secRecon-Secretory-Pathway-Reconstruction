@@ -17,7 +17,8 @@ system_colors = {
     'Proteostasis': (0.3, 0.3, 0.9, 1.0),
     'Translocation': (0.4, 0.7, 0.9, 1.0),
     'Vesicle trafficking': (0.7, 0.7, 0.3, 1.0),
-    'Secreted': (0.9, 0.1, 0.1, 1.0)
+    'Secreted': (0.9, 0.1, 0.1, 1.0),
+    'Metabolic': (0.4, 0.2, 0.5, 1.0)
 }
 
 localization_colors = {
@@ -187,21 +188,24 @@ def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_b
             legend_patches = [mpatches.Patch(color=color, label=category) for category, color in localization_colors.items()]
             color_legend = plt.legend(handles=legend_patches, prop={'size': 25}, loc='lower left', bbox_to_anchor=(0.7, 0.4), title="Subcellular Localization" , title_fontsize=35)
 
-        # Create custom legend handles for node sizes
-        size_legend_patches = []
-        size_labels = ['0 to 2', '2 to 4', '> 4']
-        scaling_factor = 1800
 
-        for (low, high), radius, label in zip(categories.keys(), categories.values(), size_labels):
-            handle = plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='black', markersize=radius * scaling_factor, label=label)
-            size_legend_patches.append(handle)
+        if node_size == 'exp':
+            # Create custom legend handles for node sizes
+            size_legend_patches = []
+            size_labels = ['0 to 2', '2 to 4', '> 4']
+            scaling_factor = 1800
 
-        # Add the second legend for node sizes
-        size_legend = plt.legend(handles=size_legend_patches, prop={'size': 40}, loc='lower left', bbox_to_anchor=(0, 0.3), title="Log2 Fold Change", title_fontsize=35)
+            for (low, high), radius, label in zip(categories.keys(), categories.values(), size_labels):
+                handle = plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='black', markersize=radius * scaling_factor, label=label)
+                size_legend_patches.append(handle)
+
+            # Add the second legend for node sizes
+            size_legend = plt.legend(handles=size_legend_patches, prop={'size': 40}, loc='lower left', bbox_to_anchor=(0, 0.3), title="Log2 Fold Change", title_fontsize=35)
 
         # Add both legends to the plot
         ax.add_artist(color_legend)
-        ax.add_artist(size_legend)
+        if node_size == 'exp':
+            ax.add_artist(size_legend)
 
         plt.subplots_adjust(right=0.75)
 
