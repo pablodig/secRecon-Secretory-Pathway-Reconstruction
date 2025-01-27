@@ -18,7 +18,6 @@ system_colors = {
     'Translocation': (0.4, 0.7, 0.9, 1.0),
     'Vesicle trafficking': (0.7, 0.7, 0.3, 1.0),
     'Secreted': (0.9, 0.1, 0.1, 1.0),
-    'Metabolic': (0.4, 0.2, 0.5, 1.0)
 }
 
 localization_colors = {
@@ -116,7 +115,7 @@ def fetch_string_interactions(main_genes, extra_genes=[]):
     return G
 
 
-def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_by='systems', legends=True, categories=None):
+def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_by='systems', legends=True, categories=None, external_colors=None):
     """
     Visualize a protein-protein interaction network using matplotlib.
 
@@ -128,6 +127,7 @@ def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_b
     - filename (str, optional): If provided, save the plot to this filename.
     - color_by (str, optional): Attribute to color nodes by ('systems' or 'localization').
     - legends (bool, optional): Whether to display legends.
+    - external_colors (dict, optional): Additional colors for systems.
     """
     # Create a figure and axes
     fig, ax = plt.subplots(figsize=(40, 40))
@@ -142,6 +142,10 @@ def visualize_network(G, gene_dict, pos, node_size=0.010, filename=None, color_b
 
     # Draw edges with scaled widths
     nx.draw_networkx_edges(G, pos, width=edge_weights, edge_color='lightgray', ax=ax)
+    
+     # Merge external_colors with system_colors if provided
+    if external_colors:
+        system_colors.update(external_colors)
 
     # Draw nodes as pie charts
     if color_by == 'systems':
