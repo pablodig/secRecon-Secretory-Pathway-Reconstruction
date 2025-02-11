@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="280mm"
+   height="138mm"
+   viewBox="0 0 280 138"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   sodipodi:docname="drawing.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.27127693"
+     inkscape:cx="796.2343"
+     inkscape:cy="221.17619"
+     inkscape:window-width="1408"
+     inkscape:window-height="493"
+     inkscape:window-x="274"
+     inkscape:window-y="198"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <path
+       id="LucidaGrande-53"
+       d="m 1503,-116 q -465,0 -1190,204 v 650 q 781,-363 1284,-363 387,0 623,203 236,203 236,535 0,271 -155,462 -154,191 -570,425 l -318,184 q -591,338 -833,636 -242,299 -242,696 0,534 387,879 388,346 988,346 534,0 1128,-178 v -600 q -732,287 -1091,287 -341,0 -563,-181 -221,-181 -221,-456 0,-232 162,-410 163,-178 594,-425 l 331,-187 q 600,-341 837,-644 238,-303 238,-728 0,-603 -445,-969 -445,-366 -1180,-366 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-79"
+       d="M 813,-1234 1363,0 50,3394 H 716 L 1688,838 2725,3394 h 581 L 1453,-1234 Z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-73"
+       d="m 1516,-78 q -422,0 -1025,197 v 565 q 603,-300 1050,-300 265,0 440,144 175,144 175,360 0,315 -490,521 l -360,154 q -797,331 -797,953 0,443 314,698 315,255 861,255 285,0 704,-78 l 128,-25 v -513 q -516,153 -819,153 -594,0 -594,-431 0,-278 450,-469 l 297,-125 q 503,-212 712,-448 210,-236 210,-589 0,-447 -353,-735 -353,-287 -903,-287 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-74"
+       d="M 1634,-78 Q 1166,-78 903,190 641,459 641,938 V 2931 H 216 v 463 h 425 v 615 l 615,60 v -675 h 888 V 2931 H 1256 V 1050 q 0,-666 575,-666 122,0 297,41 V 0 q -284,-78 -494,-78 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-65"
+       d="M 3103,109 Q 2484,-78 2044,-78 1294,-78 820,420 347,919 347,1713 q 0,771 417,1265 417,494 1067,494 616,0 952,-438 336,-437 336,-1243 l -3,-191 H 975 Q 1109,391 2159,391 q 385,0 944,206 z M 1003,2063 h 1497 q 0,946 -706,946 -710,0 -791,-946 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-6d"
+       d="m 616,0 v 3394 h 615 v -638 q 450,713 1157,713 681,0 928,-713 437,716 1137,716 450,0 697,-264 247,-264 247,-739 V 0 h -619 v 2372 q 0,581 -459,581 -478,0 -1003,-678 V 0 h -619 v 2372 q 0,584 -469,584 -465,0 -997,-681 V 0 Z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-50"
+       d="m 597,0 v 4625 h 1259 q 838,0 1203,-283 366,-283 366,-929 0,-738 -500,-1157 -500,-418 -1387,-418 H 1247 V 0 Z m 650,2334 h 266 q 584,0 902,269 319,269 319,760 0,415 -250,593 -250,178 -834,178 h -403 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-72"
+       d="m 616,0 v 3394 h 615 v -638 q 366,713 1063,713 94,0 197,-16 v -575 q -160,53 -282,53 -584,0 -978,-693 V 0 Z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-6f"
+       d="m 1944,-78 q -728,0 -1163,483 -434,483 -434,1292 0,819 436,1295 436,477 1183,477 747,0 1182,-477 436,-476 436,-1289 Q 3584,872 3146,397 2709,-78 1944,-78 Z m 9,462 q 978,0 978,1319 0,1303 -965,1303 -963,0 -963,-1309 0,-1313 950,-1313 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-69"
+       d="m 616,0 v 3394 h 615 V 0 Z m 0,4009 v 616 h 615 v -616 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-6e"
+       d="m 616,0 v 3394 h 615 v -638 q 488,713 1194,713 441,0 703,-280 263,-280 263,-751 V 0 h -616 v 2238 q 0,378 -111,539 -111,161 -367,161 -566,0 -1066,-741 V 0 Z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-20"
+       transform="scale(0.015625)"
+       d="" />
+    <path
+       id="LucidaGrande-63"
+       d="m 1941,-78 q -688,0 -1141,509 -453,510 -453,1285 0,828 448,1290 449,463 1252,463 397,0 887,-110 v -515 q -521,153 -850,153 -471,0 -757,-355 -286,-354 -286,-945 0,-572 293,-925 294,-353 769,-353 422,0 869,215 V 103 Q 2375,-78 1941,-78 Z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-66"
+       d="M 1350,2931 V 0 H 731 V 2931 H 250 v 463 h 481 v 406 q 0,1213 1107,1213 309,0 703,-104 v -487 q -416,128 -666,128 -303,0 -414,-146 -111,-145 -111,-538 v -472 h 847 v -463 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-61"
+       d="M 2366,431 Q 1813,-78 1300,-78 878,-78 600,186 322,450 322,853 q 0,556 467,854 467,299 1339,299 h 147 v 410 q 0,590 -606,590 -488,0 -1053,-300 v 510 q 622,253 1165,253 569,0 839,-257 271,-256 271,-796 V 878 q 0,-528 325,-528 40,0 118,13 l 44,-341 q -209,-100 -462,-100 -432,0 -550,509 z m -91,335 v 878 l -206,6 q -506,0 -819,-192 -312,-192 -312,-505 0,-222 156,-375 156,-153 381,-153 384,0 800,341 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-2d"
+       d="m 463,1619 v 462 h 2775 v -462 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-6c"
+       d="m 616,0 v 4934 h 615 V 0 Z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-64"
+       d="M 2794,0 V 638 Q 2419,-78 1663,-78 1050,-78 698,369 347,816 347,1591 q 0,847 398,1362 399,516 1049,516 603,0 1000,-463 v 1928 h 619 V 0 Z m 0,2584 q -478,422 -906,422 -885,0 -885,-1353 0,-1190 788,-1190 512,0 1003,559 z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-54"
+       d="M 1697,0 V 4134 H 56 v 491 H 3994 V 4134 H 2353 V 0 Z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-56"
+       d="M 1859,0 113,4625 H 769 L 2200,838 3581,4625 h 575 L 2478,0 Z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-6b"
+       d="m 616,0 v 4934 h 615 V 1747 l 1438,1647 h 662 L 1959,1809 3616,0 H 2828 L 1231,1741 V 0 Z"
+       transform="scale(0.015625)" />
+    <path
+       id="LucidaGrande-67"
+       d="m 628,-1128 72,534 q 534,-253 1053,-253 1041,0 1041,1103 V 791 Q 2453,78 1675,78 1066,78 706,522 347,966 347,1719 q 0,775 409,1262 410,488 1060,488 568,0 978,-463 v 388 h 619 V 925 q 0,-797 -83,-1180 -83,-383 -311,-626 -403,-428 -1253,-428 -594,0 -1138,181 z m 2166,2303 v 1409 q -406,422 -885,422 -425,0 -666,-341 -240,-340 -240,-934 0,-1115 785,-1115 534,0 1006,559 z"
+       transform="scale(0.015625)" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="legend_1"
+       transform="matrix(0.35277777,0,0,0.35277777,-37.30539,-449.93876)"
+       style="stroke-linecap:butt;stroke-linejoin:round">
+      <g
+         id="patch_174"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <path
+           d="m 125.2,1655.5873 h 751.5 q 8,0 8,-8 V 1294.506 q 0,-8 -8,-8 H 125.2 q -8,0 -8,8 v 353.0813 q 0,8 8,8 z"
+           style="opacity:0.8;fill:#ffffff;stroke:#cccccc;stroke-linecap:butt;stroke-linejoin:miter"
+           id="path2258" />
+      </g>
+      <g
+         id="text_1"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <!-- System -->
+        <g
+           transform="matrix(0.45,0,0,-0.45,423.64492,1337.1982)"
+           id="g2263"
+           style="stroke-linecap:butt;stroke-linejoin:round">
+          <defs
+             id="defs2258">
+            <path
+               id="path1"
+               d="m 1503,-116 q -465,0 -1190,204 v 650 q 781,-363 1284,-363 387,0 623,203 236,203 236,535 0,271 -155,462 -154,191 -570,425 l -318,184 q -591,338 -833,636 -242,299 -242,696 0,534 387,879 388,346 988,346 534,0 1128,-178 v -600 q -732,287 -1091,287 -341,0 -563,-181 -221,-181 -221,-456 0,-232 162,-410 163,-178 594,-425 l 331,-187 q 600,-341 837,-644 238,-303 238,-728 0,-603 -445,-969 -445,-366 -1180,-366 z"
+               transform="scale(0.015625)" />
+            <path
+               id="path2"
+               d="M 813,-1234 1363,0 50,3394 H 716 L 1688,838 2725,3394 h 581 L 1453,-1234 Z"
+               transform="scale(0.015625)" />
+            <path
+               id="path3"
+               d="m 1516,-78 q -422,0 -1025,197 v 565 q 603,-300 1050,-300 265,0 440,144 175,144 175,360 0,315 -490,521 l -360,154 q -797,331 -797,953 0,443 314,698 315,255 861,255 285,0 704,-78 l 128,-25 v -513 q -516,153 -819,153 -594,0 -594,-431 0,-278 450,-469 l 297,-125 q 503,-212 712,-448 210,-236 210,-589 0,-447 -353,-735 -353,-287 -903,-287 z"
+               transform="scale(0.015625)" />
+            <path
+               id="path4"
+               d="M 1634,-78 Q 1166,-78 903,190 641,459 641,938 V 2931 H 216 v 463 h 425 v 615 l 615,60 v -675 h 888 V 2931 H 1256 V 1050 q 0,-666 575,-666 122,0 297,41 V 0 q -284,-78 -494,-78 z"
+               transform="scale(0.015625)" />
+            <path
+               id="path5"
+               d="M 3103,109 Q 2484,-78 2044,-78 1294,-78 820,420 347,919 347,1713 q 0,771 417,1265 417,494 1067,494 616,0 952,-438 336,-437 336,-1243 l -3,-191 H 975 Q 1109,391 2159,391 q 385,0 944,206 z M 1003,2063 h 1497 q 0,946 -706,946 -710,0 -791,-946 z"
+               transform="scale(0.015625)" />
+            <path
+               id="path6"
+               d="m 616,0 v 3394 h 615 v -638 q 450,713 1157,713 681,0 928,-713 437,716 1137,716 450,0 697,-264 247,-264 247,-739 V 0 h -619 v 2372 q 0,581 -459,581 -478,0 -1003,-678 V 0 h -619 v 2372 q 0,584 -469,584 -465,0 -997,-681 V 0 Z"
+               transform="scale(0.015625)" />
+          </defs>
+          <use
+             xlink:href="#LucidaGrande-53"
+             id="use2258"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-79"
+             x="53.857422"
+             id="use2259"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-73"
+             x="106.10352"
+             id="use2260"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="157.08008"
+             id="use2261"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-65"
+             x="194.48242"
+             id="use2262"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6d"
+             x="250.19531"
+             id="use2263"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+        </g>
+      </g>
+      <g
+         id="patch_175"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <path
+           d="m 133.2,1396.7123 h 80 v -28 h -80 z"
+           style="fill:#ff9900;stroke:#ff9900;stroke-linecap:butt;stroke-linejoin:miter"
+           id="path2263" />
+      </g>
+      <g
+         id="text_2"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <!-- Protein conformation -->
+        <g
+           transform="matrix(0.4,0,0,-0.4,245.2,1396.7123)"
+           id="g2283"
+           style="stroke-linecap:butt;stroke-linejoin:round">
+          <defs
+             id="defs2263">
+            <path
+               id="path7"
+               d="m 597,0 v 4625 h 1259 q 838,0 1203,-283 366,-283 366,-929 0,-738 -500,-1157 -500,-418 -1387,-418 H 1247 V 0 Z m 650,2334 h 266 q 584,0 902,269 319,269 319,760 0,415 -250,593 -250,178 -834,178 h -403 z"
+               transform="scale(0.015625)" />
+            <path
+               id="path8"
+               d="m 616,0 v 3394 h 615 v -638 q 366,713 1063,713 94,0 197,-16 v -575 q -160,53 -282,53 -584,0 -978,-693 V 0 Z"
+               transform="scale(0.015625)" />
+            <path
+               id="path9"
+               d="m 1944,-78 q -728,0 -1163,483 -434,483 -434,1292 0,819 436,1295 436,477 1183,477 747,0 1182,-477 436,-476 436,-1289 Q 3584,872 3146,397 2709,-78 1944,-78 Z m 9,462 q 978,0 978,1319 0,1303 -965,1303 -963,0 -963,-1309 0,-1313 950,-1313 z"
+               transform="scale(0.015625)" />
+            <path
+               id="path10"
+               d="m 616,0 v 3394 h 615 V 0 Z m 0,4009 v 616 h 615 v -616 z"
+               transform="scale(0.015625)" />
+            <path
+               id="path11"
+               d="m 616,0 v 3394 h 615 v -638 q 488,713 1194,713 441,0 703,-280 263,-280 263,-751 V 0 h -616 v 2238 q 0,378 -111,539 -111,161 -367,161 -566,0 -1066,-741 V 0 Z"
+               transform="scale(0.015625)" />
+            <path
+               id="path12"
+               transform="scale(0.015625)"
+               d="" />
+            <path
+               id="path13"
+               d="m 1941,-78 q -688,0 -1141,509 -453,510 -453,1285 0,828 448,1290 449,463 1252,463 397,0 887,-110 v -515 q -521,153 -850,153 -471,0 -757,-355 -286,-354 -286,-945 0,-572 293,-925 294,-353 769,-353 422,0 869,215 V 103 Q 2375,-78 1941,-78 Z"
+               transform="scale(0.015625)" />
+            <path
+               id="path14"
+               d="M 1350,2931 V 0 H 731 V 2931 H 250 v 463 h 481 v 406 q 0,1213 1107,1213 309,0 703,-104 v -487 q -416,128 -666,128 -303,0 -414,-146 -111,-145 -111,-538 v -472 h 847 v -463 z"
+               transform="scale(0.015625)" />
+            <path
+               id="path15"
+               d="M 2366,431 Q 1813,-78 1300,-78 878,-78 600,186 322,450 322,853 q 0,556 467,854 467,299 1339,299 h 147 v 410 q 0,590 -606,590 -488,0 -1053,-300 v 510 q 622,253 1165,253 569,0 839,-257 271,-256 271,-796 V 878 q 0,-528 325,-528 40,0 118,13 l 44,-341 q -209,-100 -462,-100 -432,0 -550,509 z m -91,335 v 878 l -206,6 q -506,0 -819,-192 -312,-192 -312,-505 0,-222 156,-375 156,-153 381,-153 384,0 800,341 z"
+               transform="scale(0.015625)" />
+          </defs>
+          <use
+             xlink:href="#LucidaGrande-50"
+             id="use2264"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-72"
+             x="55.273438"
+             id="use2265"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="96.191406"
+             id="use2266"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="157.61719"
+             id="use2267"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-65"
+             x="195.01953"
+             id="use2268"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="250.73242"
+             id="use2269"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6e"
+             x="279.63867"
+             id="use2270"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-20"
+             x="341.69922"
+             id="use2271"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-63"
+             x="373.33984"
+             id="use2272"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="424.56055"
+             id="use2273"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6e"
+             x="485.98633"
+             id="use2274"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-66"
+             x="548.04688"
+             id="use2275"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="584.81445"
+             id="use2276"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-72"
+             x="646.24023"
+             id="use2277"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6d"
+             x="687.1582"
+             id="use2278"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-61"
+             x="780.51758"
+             id="use2279"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="835.74219"
+             id="use2280"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="873.14453"
+             id="use2281"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="902.05078"
+             id="use2282"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6e"
+             x="963.47656"
+             id="use2283"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+        </g>
+      </g>
+      <g
+         id="patch_176"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <path
+           d="m 133.2,1455.2623 h 80 v -28 h -80 z"
+           style="fill:#1ae61a;stroke:#1ae61a;stroke-linecap:butt;stroke-linejoin:miter"
+           id="path2283" />
+      </g>
+      <g
+         id="text_3"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <!-- Post-translational modifications -->
+        <g
+           transform="matrix(0.4,0,0,-0.4,245.2,1455.2623)"
+           id="g2315"
+           style="stroke-linecap:butt;stroke-linejoin:round">
+          <defs
+             id="defs2283">
+            <path
+               id="path16"
+               d="m 463,1619 v 462 h 2775 v -462 z"
+               transform="scale(0.015625)" />
+            <path
+               id="path17"
+               d="m 616,0 v 4934 h 615 V 0 Z"
+               transform="scale(0.015625)" />
+            <path
+               id="path18"
+               d="M 2794,0 V 638 Q 2419,-78 1663,-78 1050,-78 698,369 347,816 347,1591 q 0,847 398,1362 399,516 1049,516 603,0 1000,-463 v 1928 h 619 V 0 Z m 0,2584 q -478,422 -906,422 -885,0 -885,-1353 0,-1190 788,-1190 512,0 1003,559 z"
+               transform="scale(0.015625)" />
+          </defs>
+          <use
+             xlink:href="#LucidaGrande-50"
+             id="use2284"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="55.273438"
+             id="use2285"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-73"
+             x="116.69922"
+             id="use2286"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="167.67578"
+             id="use2287"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-2d"
+             x="205.07812"
+             id="use2288"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="262.93945"
+             id="use2289"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-72"
+             x="300.3418"
+             id="use2290"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-61"
+             x="341.25977"
+             id="use2291"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6e"
+             x="396.48438"
+             id="use2292"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-73"
+             x="458.54492"
+             id="use2293"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6c"
+             x="509.52148"
+             id="use2294"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-61"
+             x="538.42773"
+             id="use2295"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="593.65234"
+             id="use2296"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="631.05469"
+             id="use2297"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="659.96094"
+             id="use2298"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6e"
+             x="721.38672"
+             id="use2299"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-61"
+             x="783.44727"
+             id="use2300"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6c"
+             x="838.67188"
+             id="use2301"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-20"
+             x="867.57812"
+             id="use2302"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6d"
+             x="899.21875"
+             id="use2303"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="992.57812"
+             id="use2304"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-64"
+             x="1054.0039"
+             id="use2305"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="1116.9434"
+             id="use2306"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-66"
+             x="1145.8496"
+             id="use2307"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="1182.6172"
+             id="use2308"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-63"
+             x="1211.5234"
+             id="use2309"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-61"
+             x="1262.7441"
+             id="use2310"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="1317.9688"
+             id="use2311"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="1355.3711"
+             id="use2312"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="1384.2773"
+             id="use2313"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6e"
+             x="1445.7031"
+             id="use2314"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-73"
+             x="1507.7637"
+             id="use2315"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+        </g>
+      </g>
+      <g
+         id="patch_177"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <path
+           d="m 133.2,1513.8123 h 80 v -28 h -80 z"
+           style="fill:#4c4ce6;stroke:#4c4ce6;stroke-linecap:butt;stroke-linejoin:miter"
+           id="path2315" />
+      </g>
+      <g
+         id="text_4"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <!-- Proteostasis -->
+        <g
+           transform="matrix(0.4,0,0,-0.4,245.2,1513.8123)"
+           id="g2327"
+           style="stroke-linecap:butt;stroke-linejoin:round">
+          <use
+             xlink:href="#LucidaGrande-50"
+             id="use2316"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-72"
+             x="55.273438"
+             id="use2317"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="96.191406"
+             id="use2318"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="157.61719"
+             id="use2319"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-65"
+             x="195.01953"
+             id="use2320"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="250.73242"
+             id="use2321"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-73"
+             x="312.1582"
+             id="use2322"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="363.13477"
+             id="use2323"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-61"
+             x="400.53711"
+             id="use2324"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-73"
+             x="455.76172"
+             id="use2325"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="506.73828"
+             id="use2326"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-73"
+             x="535.64453"
+             id="use2327"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+        </g>
+      </g>
+      <g
+         id="patch_178"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <path
+           d="m 133.2,1572.3623 h 80 v -28 h -80 z"
+           style="fill:#66b2e6;stroke:#66b2e6;stroke-linecap:butt;stroke-linejoin:miter"
+           id="path2327" />
+      </g>
+      <g
+         id="text_5"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <!-- Translocation -->
+        <g
+           transform="matrix(0.4,0,0,-0.4,245.2,1572.3623)"
+           id="g2340"
+           style="stroke-linecap:butt;stroke-linejoin:round">
+          <defs
+             id="defs2327">
+            <path
+               id="path19"
+               d="M 1697,0 V 4134 H 56 v 491 H 3994 V 4134 H 2353 V 0 Z"
+               transform="scale(0.015625)" />
+          </defs>
+          <use
+             xlink:href="#LucidaGrande-54"
+             id="use2328"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-72"
+             x="63.232422"
+             id="use2329"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-61"
+             x="104.15039"
+             id="use2330"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6e"
+             x="159.375"
+             id="use2331"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-73"
+             x="221.43555"
+             id="use2332"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6c"
+             x="272.41211"
+             id="use2333"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="301.31836"
+             id="use2334"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-63"
+             x="362.74414"
+             id="use2335"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-61"
+             x="413.96484"
+             id="use2336"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="469.18945"
+             id="use2337"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="506.5918"
+             id="use2338"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6f"
+             x="535.49805"
+             id="use2339"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6e"
+             x="596.92383"
+             id="use2340"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+        </g>
+      </g>
+      <g
+         id="patch_179"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <path
+           d="m 133.2,1631.406 h 80 v -28 h -80 z"
+           style="fill:#b2b24c;stroke:#b2b24c;stroke-linecap:butt;stroke-linejoin:miter"
+           id="path2340" />
+      </g>
+      <g
+         id="text_6"
+         style="stroke-linecap:butt;stroke-linejoin:round">
+        <!-- Vesicle trafficking -->
+        <g
+           transform="matrix(0.4,0,0,-0.4,245.2,1631.406)"
+           id="g2359"
+           style="stroke-linecap:butt;stroke-linejoin:round">
+          <defs
+             id="defs2340">
+            <path
+               id="path20"
+               d="M 1859,0 113,4625 H 769 L 2200,838 3581,4625 h 575 L 2478,0 Z"
+               transform="scale(0.015625)" />
+            <path
+               id="path21"
+               d="m 616,0 v 4934 h 615 V 1747 l 1438,1647 h 662 L 1959,1809 3616,0 H 2828 L 1231,1741 V 0 Z"
+               transform="scale(0.015625)" />
+            <path
+               id="path22"
+               d="m 628,-1128 72,534 q 534,-253 1053,-253 1041,0 1041,1103 V 791 Q 2453,78 1675,78 1066,78 706,522 347,966 347,1719 q 0,775 409,1262 410,488 1060,488 568,0 978,-463 v 388 h 619 V 925 q 0,-797 -83,-1180 -83,-383 -311,-626 -403,-428 -1253,-428 -594,0 -1138,181 z m 2166,2303 v 1409 q -406,422 -885,422 -425,0 -666,-341 -240,-340 -240,-934 0,-1115 785,-1115 534,0 1006,559 z"
+               transform="scale(0.015625)" />
+          </defs>
+          <use
+             xlink:href="#LucidaGrande-56"
+             id="use2341"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-65"
+             x="65.380859"
+             id="use2342"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-73"
+             x="121.09375"
+             id="use2343"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="172.07031"
+             id="use2344"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-63"
+             x="200.97656"
+             id="use2345"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6c"
+             x="252.19727"
+             id="use2346"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-65"
+             x="281.10352"
+             id="use2347"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-20"
+             x="336.81641"
+             id="use2348"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-74"
+             x="368.45703"
+             id="use2349"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-72"
+             x="405.85938"
+             id="use2350"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-61"
+             x="446.77734"
+             id="use2351"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-66"
+             x="502.00195"
+             id="use2352"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-66"
+             x="538.76953"
+             id="use2353"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="575.53711"
+             id="use2354"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-63"
+             x="604.44336"
+             id="use2355"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6b"
+             x="655.66406"
+             id="use2356"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-69"
+             x="714.11133"
+             id="use2357"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-6e"
+             x="743.01758"
+             id="use2358"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+          <use
+             xlink:href="#LucidaGrande-67"
+             x="805.07812"
+             id="use2359"
+             style="stroke-linecap:butt;stroke-linejoin:round" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
